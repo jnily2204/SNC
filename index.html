@@ -673,7 +673,7 @@
             <button id="musicToggle" data-translate-key="play_music_button">▶️ Mở Nhạc</button>
         </div>
         <audio id="backgroundMusic" loop>
-            <source src="YOUR_MUSIC_FILE.mp3" type="audio/mpeg">
+            <source src="music slow.mp3" type="audio/mpeg">
             Trình duyệt của bạn không hỗ trợ phát nhạc.
         </audio>
     </div>
@@ -756,7 +756,7 @@
                     'feedback_message_label': 'Cảm nhận & góp ý của bạn:',
                     'feedback_submit_button': 'Gửi Feedback',
                     'feedback_email_info': 'Lưu ý: Nhấn nút này sẽ mở ứng dụng email mặc định của bạn.',
-                    'alert_music_file_missing': "Vui lòng thay thế 'YOUR_MUSIC_FILE.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!",
+                    'alert_music_file_missing': "Vui lòng thay thế 'music slow.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!",
                     'alert_music_autoplay_blocked': "Trình duyệt có thể đã chặn tự động phát nhạc. Hãy thử tương tác với trang (ví dụ: nhấn nút) trước khi bật nhạc, hoặc kiểm tra cài đặt tự động phát của trình duyệt.",
                     'alert_feedback_message_required': "Vui lòng nhập nội dung phản hồi của bạn.",
                     'no_poses_defined': "Không có tư thế nào được định nghĩa.",
@@ -808,7 +808,7 @@
                     'feedback_message_label': 'Your thoughts & suggestions:',
                     'feedback_submit_button': 'Send Feedback',
                     'feedback_email_info': 'Note: Clicking this button will open your default email client.',
-                    'alert_music_file_missing': "Please replace 'YOUR_MUSIC_FILE.mp3' in the source code with your music file path!",
+                    'alert_music_file_missing': "Please replace 'music slow.mp3' in the source code with your music file path!",
                     'alert_music_autoplay_blocked': "Browser might have blocked autoplay. Try interacting with the page (e.g., click a button) before playing music, or check your browser's autoplay settings.",
                     'alert_feedback_message_required': "Please enter your feedback message.",
                     'no_poses_defined': "No poses defined.",
@@ -1184,8 +1184,8 @@
                     backgroundMusic.pause();
                     musicToggle.textContent = playText;
                 } else {
-                    if (backgroundMusic.currentSrc && backgroundMusic.currentSrc.includes("YOUR_MUSIC_FILE.mp3") && !backgroundMusic.src.startsWith("blob:")) {
-                        alert((translations[currentLanguage] && translations[currentLanguage]['alert_music_file_missing']) || "Vui lòng thay thế 'YOUR_MUSIC_FILE.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!");
+                    if (backgroundMusic.currentSrc && backgroundMusic.currentSrc.includes("music slow.mp3") && !backgroundMusic.src.startsWith("blob:")) {
+                        alert((translations[currentLanguage] && translations[currentLanguage]['alert_music_file_missing']) || "Vui lòng thay thế 'music slow.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!");
                         return;
                     }
                     backgroundMusic.play().catch(error => {
