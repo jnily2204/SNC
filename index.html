@@ -7,57 +7,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
-        /* CSS ĐÃ ĐƯỢC CẬP NHẬT */
+        /* CSS ĐÃ ĐƯỢC CẬP NHẬT CHO COMMENT FEED PAGE VÀ TOP BAR */
         body {
             display: flex;
             flex-direction: column; 
-            justify-content: center; /* Căn giữa nội dung chính theo chiều dọc */
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #120810 0%, #2C1A2B 100%); 
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 20px;
-            padding-top: 70px; /* Thêm padding top để không bị che bởi top-bar */
+            /* padding-top: 70px; Sẽ được quản lý bởi JS khi top-bar hiển thị */
             box-sizing: border-box;
             color: #F5E9F2; 
         }
 
-        /* --- TOP BAR CONTROLS --- */
         .top-bar-controls {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0,0,0,0.3); /* Nền mờ hơn */
+            background-color: rgba(0,0,0,0.3); 
             backdrop-filter: blur(5px);
-            padding: 8px 15px; /* Giảm padding */
+            padding: 8px 15px; 
             display: flex;
-            justify-content: space-between; /* Đẩy các mục ra hai bên */
+            justify-content: space-between; 
             align-items: center;
-            z-index: 1005; /* Đảm bảo luôn ở trên cùng */
+            z-index: 1005; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             box-sizing: border-box;
+            transition: top 0.3s ease-in-out; 
+        }
+        .top-bar-controls.hidden {
+            top: -80px; 
         }
 
+
         .language-switcher {
-            /* Bỏ position: fixed, top, right vì đã nằm trong top-bar */
-            background-color: transparent; /* Bỏ nền riêng */
+            background-color: transparent; 
             padding: 0;
             border-radius: 0;
             display: flex;
-            flex-wrap: nowrap; /* Ngăn xuống dòng nếu ít ngôn ngữ */
-            gap: 6px; /* Giảm gap */
-            justify-content: flex-start; /* Căn trái trong phần của nó */
+            flex-wrap: nowrap; 
+            gap: 6px; 
+            justify-content: flex-start; 
         }
         .language-switcher button {
             background: none;
             border: 1px solid rgba(255, 51, 161, 0.4); 
             color: #FFC0CB; 
-            padding: 4px 8px; /* Giảm padding nút */
+            padding: 4px 8px; 
             border-radius: 6px; 
             cursor: pointer;
-            font-size: 12px; /* Giảm font size */
+            font-size: 12px; 
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
@@ -66,33 +69,58 @@
         .language-switcher button:hover, .language-switcher button.active {
             background-color: #FF33A1;
             color: #1D111C;
-            transform: scale(1.03); /* Giảm hiệu ứng scale */
+            transform: scale(1.03); 
             border-color: #FF33A1;
         }
         .language-switcher button .flag {
             font-size: 14px; 
         }
         
-        .music-controls {
-             /* Bỏ margin-top vì đã nằm trong top-bar */
-            margin-top: 0;
-        }
-        .music-controls button {
-            background: rgba(255, 51, 161, 0.1); /* Nền nhẹ hơn */
+        .youtube-audio-controls button { 
+            background: rgba(255, 51, 161, 0.1); 
             border: 1px solid rgba(255, 51, 161, 0.4);
             color: #FF8AD8;
-            padding: 5px 10px; /* Giảm padding nút nhạc */
-            font-size: 13px; /* Giảm font size */
+            padding: 5px 10px; 
+            font-size: 13px; 
             border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .music-controls button:hover {
+        .youtube-audio-controls button:hover {
             background: #FF33A1;
             color: #1D111C;
-            box-shadow: 0 0 8px #FF33A1; /* Giảm shadow */
+            box-shadow: 0 0 8px #FF33A1; 
         }
 
+        .floating-comment-button { 
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(145deg, #FF33A1, #C71585); 
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            z-index: 999;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, bottom 0.3s ease;
+        }
+        .floating-comment-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255,51,161,0.5);
+        }
+        .floating-comment-button.hidden {
+            opacity: 0;
+            bottom: -80px; 
+            pointer-events: none;
+        }
 
-        /* Nút bình luận nổi đã bị xóa */
 
         .page-section { 
             display: none; 
@@ -115,7 +143,7 @@
             align-items: center;
             text-align: center;
             padding: 40px 25px;
-            /* margin-top: 20px;  Đã có padding-top ở body */
+            margin-top: 0; 
             max-width: 700px; 
             background-color: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(15px);
@@ -211,7 +239,7 @@
         .game-container {
             flex-direction: column; 
             align-items: center; 
-            /* margin-top: 60px; Đã có padding-top ở body */
+            margin-top: 0; 
             background-color: rgba(10, 0, 5, 0.4); 
             backdrop-filter: blur(12px);
             padding: 25px; 
@@ -439,6 +467,184 @@
             color: #E6A4B4;
         }
 
+        /* --- COMMENT FEED PAGE STYLES --- */
+        .comment-feed-page.active { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 20px; 
+            margin-top: 0; 
+            z-index: 1003; 
+            background-color: rgba(10, 0, 5, 0.95); 
+            backdrop-filter: blur(15px); 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .comment-feed-page h2 {
+            font-family: 'Playfair Display', serif;
+            color: #FF69B4;
+            margin-top: 20px; 
+            margin-bottom: 15px; 
+            font-size: clamp(22px, 5vw, 28px);
+            text-shadow: 0 0 10px #FF69B4;
+        }
+        #commentFeedDisplayArea {
+            width: 100%;
+            max-width: 700px; 
+            flex-grow: 1; 
+            overflow-y: auto;
+            padding: 15px; 
+            background-color: rgba(0,0,0,0.25);
+            border-radius: 15px;
+            margin-bottom: 15px; 
+            border: 1px solid rgba(255,51,161,0.2);
+            max-height: calc(100vh - 320px); /* SỬA: Tăng chiều cao tối đa cho vùng hiển thị */
+        }
+        #commentFeedDisplayArea::-webkit-scrollbar { width: 8px; }
+        #commentFeedDisplayArea::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
+        #commentFeedDisplayArea::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+
+        .comment-feed-page #commentFeedForm { 
+            width: 100%;
+            max-width: 600px; 
+            margin: 0 auto 10px auto; /* Giảm margin bottom */
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; /* Giảm gap */
+        }
+        .comment-feed-page #commentFeedForm label {
+             color: #FF8AD8;
+             font-weight: bold;
+             font-size: 14px; /* Giảm font label */
+             text-align: left;
+             display: block;
+             margin-bottom: 3px; /* Giảm margin */
+        }
+        .comment-feed-page #commentFeedForm input[type="text"],
+        .comment-feed-page #commentFeedForm input[type="password"],
+        .comment-feed-page #commentFeedForm textarea {
+            width: 100%; 
+            padding: 10px; /* Giảm padding */
+            margin-bottom: 10px; /* Giảm margin */
+            border: 1px solid #5A4FCF; 
+            border-radius: 8px; 
+            background-color: rgba(255,255,255,0.05);
+            color: #F5E9F2;
+            font-size: 15px; 
+            box-sizing: border-box; 
+        }
+         .comment-feed-page #commentFeedForm textarea {
+            height: 70px; /* Giảm chiều cao textarea */
+            resize: vertical;
+            margin-bottom: 5px; 
+        }
+        .emoji-picker-container { 
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Giảm gap */
+            margin-bottom: 10px; 
+        }
+        #toggleEmojiPickerButton {
+            background: none;
+            border: 1px solid #FF8AD8;
+            color: #FF8AD8;
+            padding: 6px 10px; /* Giảm padding */
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px; 
+            transition: background-color 0.2s, color 0.2s;
+        }
+        #toggleEmojiPickerButton:hover {
+            background-color: #FF8AD8;
+            color: #1D111C;
+        }
+
+        .emoji-picker {
+            display: none; 
+            flex-wrap: wrap;
+            gap: 6px; /* Giảm gap */
+            justify-content: flex-start; 
+            padding: 8px; /* Giảm padding */
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            margin-top: 5px; 
+        }
+        .emoji-picker.visible {
+            display: flex;
+        }
+        .emoji-picker span {
+            font-size: 20px; /* Giảm kích thước emoji */
+            cursor: pointer;
+            padding: 3px; /* Giảm padding */
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .emoji-picker span:hover {
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .comment-feed-page #commentFeedForm button[type="submit"] { 
+            width: 100%; 
+            padding: 12px 20px; /* Giảm padding */
+            margin-top: 5px; 
+            font-size: 16px; /* Giảm font */
+            letter-spacing: 1px; 
+            background: linear-gradient(145deg, #FF33A1, #C71585);
+            color: white;
+            border: 1px solid #FF33A1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,51,161,0.6) inset;
+            border-radius: 25px; /* Giảm bo góc */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+         }
+         .comment-feed-page #commentFeedForm button[type="submit"]:hover {
+            background: linear-gradient(145deg, #C71585, #FF33A1);
+            box-shadow: 0 7px 18px rgba(0,0,0,0.4), 0 0 12px rgba(255,51,161,0.8) inset;
+            transform: translateY(-1px);
+         }
+
+        .comment-feed-page .comment-info {
+            font-size: 12px; /* Giảm font */
+            color: #B2A1B1;
+            margin-top: 8px; 
+            text-align: center; 
+        }
+         #adminFeedPasswordContainer {
+            /* grid-column: 1 / -1;  Không cần nữa vì form là flex column */
+         }
+
+
+        .comment-feed-page .back-to-game-button {
+            margin-top: 15px; /* Giảm margin */
+            padding: 10px 20px; /* Giảm padding */
+            font-size: 16px; /* Giảm font */
+            background: linear-gradient(145deg, #7A0042, #B3005E); 
+            color: white;
+            border: 1px solid #B3005E;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(179,0,94,0.6) inset;
+            align-self: center; 
+            border-radius: 25px; /* Giảm bo góc */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .comment-feed-page .back-to-game-button:hover {
+            background: linear-gradient(145deg, #B3005E, #7A0042);
+            box-shadow: 0 7px 18px rgba(0,0,0,0.4), 0 0 12px rgba(179,0,94,0.8) inset;
+            transform: translateY(-1px);
+        }
+
+
         /* MODAL CHO TƯ THẾ */
         .pose-modal { 
             display: none; 
@@ -514,17 +720,28 @@
             font-size: 19px;
         }
         
+        /* Ẩn trình phát YouTube */
+        #youtube-player-container {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
-    <div class="top-bar-controls">
+    <div class="top-bar-controls" id="topBarControls"> 
         <div class="language-switcher" id="languageSwitcher">
             </div>
-        <div class="music-controls">
-            <button id="musicToggle" data-translate-key="play_music_button">▶️ Mở Nhạc</button>
+        <div class="youtube-audio-controls"> 
+            <button id="youtubeAudioToggle" data-translate-key="play_youtube_audio_button">▶️ Nghe Nhạc</button>
         </div>
     </div>
     
+    <button class="floating-comment-button" id="openCommentPageButton" title="Bình luận">💬</button>
+
     <div class="landing-page-section page-section active" id="landingPageSection">
         <h1 data-translate-key="landing_main_title">Bộ Bài Yêu Thương</h1>
         <p class="tagline-lp" data-translate-key="landing_tagline_lp">- Hardcore Edition - <br>Đánh Thức Giác Quan, Bùng Nổ Cảm Xúc</p>
@@ -535,17 +752,14 @@
 
         <h2 data-translate-key="landing_prepare_title">Cần Chuẩn Bị Gì?</h2>
         <ul data-translate-key="landing_prepare_list_items"> 
-            {/* Nội dung sẽ được điền bởi JS */}
         </ul>
 
         <h2 data-translate-key="landing_who_play_title">Ai Nên Chơi?</h2>
         <ul data-translate-key="landing_who_play_list_items">
-             {/* Nội dung sẽ được điền bởi JS */}
         </ul>
 
         <h2 data-translate-key="landing_when_play_title">Nên Chơi Khi Nào?</h2>
         <ul data-translate-key="landing_when_play_list_items">
-            {/* Nội dung sẽ được điền bởi JS */}
         </ul>
         
         <button class="cta-button" id="startGameButton" data-translate-key="landing_start_button">Bắt Đầu Cuộc Vui</button>
@@ -576,33 +790,60 @@
         </div>
         
         <div class="cards-remaining" id="cardsRemaining" data-translate-key="cards_remaining_text_prefix">Còn lại: 80 lá</div>
-
-        <audio id="backgroundMusic" loop>
-            <source src="music slow.mp3" type="audio/mpeg">
-            Trình duyệt của bạn không hỗ trợ phát nhạc.
-        </audio>
-    </div>
+        
+        </div>
 
     <div id="poseModal" class="pose-modal"> 
         <div class="pose-modal-content">
-            <span class="pose-modal-close" id="closePoseModal">&times;</span>
+            <span class="pose-modal-close" id="closePoseModal">×</span>
             <h2 id="poseModalTitle" data-translate-key="pose_modal_title_text">🔥 Tư Thế Ngẫu Nhiên 21+ 🔥</h2>
             <p id="poseModalText"></p>
         </div>
     </div>
 
+    <div class="comment-feed-page page-section" id="commentFeedPage">
+        <h2 data-translate-key="comment_page_title">Bảng Vàng Cảm Xúc</h2>
+        <div id="commentFeedDisplayArea">
+            </div>
+        <form id="commentFeedForm">
+            <label for="commentFeedUser" data-translate-key="comment_user_label">Tên của bạn:</label>
+            <input type="text" id="commentFeedUser" name="commentFeedUser" placeholder="Ẩn danh nếu bỏ trống">
+            
+            <div id="adminFeedPasswordContainer" style="display:none;">
+                 <label for="adminFeedPassword" data-translate-key="admin_password_label">Mật khẩu Admin:</label>
+                 <input type="password" id="adminFeedPassword" name="adminFeedPassword">
+            </div>
+
+            <label for="commentFeedMessage" data-translate-key="comment_message_label">Chia sẻ của bạn:</label>
+            <textarea id="commentFeedMessage" name="commentFeedMessage" rows="3" required></textarea>
+            
+            <div class="emoji-picker-container">
+                 <button type="button" id="toggleEmojiPickerButton" title="Chọn Emoji">😃</button>
+            </div>
+            <div class="emoji-picker" id="emojiPicker">
+                </div>
+
+            <button type="submit" id="submitFeedCommentButton" data-translate-key="comment_submit_button">Đăng</button>
+            <p class="comment-info" data-translate-key="comment_local_info">Lưu ý: Bình luận được lưu cục bộ trên trình duyệt này.</p>
+        </form>
+        <button class="back-to-game-button" id="backToGameFromComments" data-translate-key="back_to_main_button">Quay Lại</button>
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // KHAI BÁO BIẾN DOM MỘT LẦN Ở ĐẦU
+            let isYoutubeAudioPlaying = false; 
+
             const landingPageSection = document.getElementById('landingPageSection');
             const gameContainer = document.getElementById('gameContainer');
-            // const commentFeedPage = document.getElementById('commentFeedPage'); // Đã xóa
+            const commentFeedPage = document.getElementById('commentFeedPage'); 
+            const topBarControls = document.getElementById('topBarControls'); 
 
             const startGameButton = document.getElementById('startGameButton');
             const languageSwitcher = document.getElementById('languageSwitcher');
             
-            // const openCommentPageButton = document.getElementById('openCommentPageButton'); // Đã xóa
-            // const backToGameFromCommentsButton = document.getElementById('backToGameFromComments'); // Đã xóa
+            const openCommentPageButton = document.getElementById('openCommentPageButton'); 
+            const backToGameFromCommentsButton = document.getElementById('backToGameFromComments');
 
             const cardPlaceholder = document.getElementById('cardPlaceholder');
             const drawnCardElement = document.getElementById('drawnCard');
@@ -612,8 +853,6 @@
             const drawButton = document.getElementById('drawButton');
             const resetButton = document.getElementById('resetButton');
             const cardsRemainingElement = document.getElementById('cardsRemaining');
-            const musicToggle = document.getElementById('musicToggle');
-            const backgroundMusic = document.getElementById('backgroundMusic');
             
             const poseModal = document.getElementById('poseModal'); 
             const closePoseModalButton = document.getElementById('closePoseModal'); 
@@ -621,9 +860,18 @@
             const poseModalText = document.getElementById('poseModalText'); 
             const predefinedPoseButton = document.getElementById('predefinedPoseButton'); 
 
-            // Các biến liên quan đến comment feed đã được xóa
+            const commentForm = document.getElementById('commentFeedForm');
+            const commentUserInput = document.getElementById('commentFeedUser');
+            const adminFeedPasswordContainer = document.getElementById('adminFeedPasswordContainer');
+            const adminFeedPasswordInput = document.getElementById('adminFeedPassword');
+            const commentMessageInput = document.getElementById('commentFeedMessage');
+            const commentFeedDisplayArea = document.getElementById('commentFeedDisplayArea');
+            const emojiPicker = document.getElementById('emojiPicker');
+            const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton');
             
-            let isMusicPlaying = false; 
+            const youtubeAudioToggleButton = document.getElementById('youtubeAudioToggle');
+            let ytPlayer;
+            const YOUTUBE_VIDEO_ID = '5qap5aO4i9A'; 
 
 
             // --- DỮ LIỆU DỊCH THUẬT ---
@@ -639,7 +887,7 @@
                         'Đồ uống yêu thích của cả hai (rượu vang, cocktail, mocktail, hay bất cứ gì làm bạn thấy "phiêu").',
                         'Một tâm hồn rộng mở, sẵn sàng phiêu lưu, chia sẻ và không phán xét.',
                         'Người bạn đời/bạn tình mà bạn tin tưởng tuyệt đối và muốn cùng nhau khám phá.',
-                        '(Tùy chọn) Một chút nhạc nền du dương, quyến rũ (trang web có sẵn nút bật/tắt nhạc).'
+                        '(Tùy chọn) Một chút nhạc nền du dương, quyến rũ.'
                     ],
                     'landing_who_play_title': 'Ai Nên Chơi?',
                     'landing_who_play_list_items': [ 
@@ -664,12 +912,17 @@
                     'pose_challenge_button': '🔥 Thử Thách 21+',
                     'cards_remaining_text_prefix': 'Còn lại:',
                     'cards_remaining_text_suffix': 'lá',
-                    'no_cards_left_text': 'Hết bài! Chơi lại nhé?', 
-                    'play_music_button': '▶️ Mở Nhạc',
-                    'pause_music_button': '⏸️ Tắt Nhạc',
+                    'no_cards_left_text': 'Hết bài! Chơi lại hoặc chia sẻ cảm xúc nhé?', 
+                    'play_youtube_audio_button': '▶️ Nghe Nhạc', 
+                    'pause_youtube_audio_button': '⏸️ Tắt Nhạc', 
                     'pose_modal_title_text': '🔥 Tư Thế Ngẫu Nhiên 21+ 🔥',
-                    'alert_music_file_missing': "Vui lòng thay thế 'YOUR_MUSIC_FILE.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!",
-                    'alert_music_autoplay_blocked': "Trình duyệt có thể đã chặn tự động phát nhạc. Hãy thử tương tác với trang (ví dụ: nhấn nút) trước khi bật nhạc, hoặc kiểm tra cài đặt tự động phát của trình duyệt.",
+                    'comment_page_title': 'Bảng Vàng Cảm Xúc', 
+                    'comment_user_label': 'Tên của bạn (hiển thị):', 
+                    'comment_message_label': 'Chia sẻ của bạn:', 
+                    'comment_submit_button': 'Đăng', 
+                    'comment_local_info': 'Lưu ý: Bình luận được lưu cục bộ trên trình duyệt này.', 
+                    'admin_password_label': 'Mật khẩu Admin:',
+                    'back_to_main_button': 'Quay Lại', 
                     'no_poses_defined': "Không có tư thế nào được định nghĩa.",
                     'anonymous_user': 'Ẩn danh',
                     // Card Categories
@@ -691,7 +944,7 @@
                         'Your favorite drinks (wine, cocktails, mocktails, or anything that gets you in the mood).',
                         'An open mind, ready for adventure, sharing, and no judgment.',
                         'A partner you absolutely trust and want to explore with.',
-                        '(Optional) Some smooth, seductive background music (the website has a play/pause button).'
+                        '(Optional) Some smooth, seductive background music.'
                     ],
                     'landing_who_play_title': 'Who Should Play?',
                     'landing_who_play_list_items': [ 
@@ -716,12 +969,18 @@
                     'pose_challenge_button': '🔥 21+ Challenge',
                     'cards_remaining_text_prefix': 'Cards left:',
                     'cards_remaining_text_suffix': '', 
-                    'no_cards_left_text': 'No cards left! Play again?', 
-                    'play_music_button': '▶️ Play Music',
-                    'pause_music_button': '⏸️ Pause Music',
-                    'pose_modal_title_text': '🔥 Random 21+ Pose 🔥',
-                    'alert_music_file_missing': "Please replace 'YOUR_MUSIC_FILE.mp3' in the source code with your music file path!",
-                    'alert_music_autoplay_blocked': "Browser might have blocked autoplay. Try interacting with the page (e.g., click a button) before playing music, or check your browser's autoplay settings.",
+                    'no_cards_left_text': 'No cards left! Play again or share your thoughts?', 
+                    'play_youtube_audio_button': '▶️ Play Music', 
+                    'pause_youtube_audio_button': '⏸️ Pause Music', 
+                    'pose_modal_title_text': '🔥 Random 21+ Pose �',
+                    'comment_page_title': 'Wall of Emotions & Comments', 
+                    'comment_user_label': 'Your Name (display):', 
+                    'comment_message_label': 'Your comment:', 
+                    'comment_submit_button': 'Post', 
+                    'comment_local_info': 'Note: Comments are stored locally in this browser and will be lost if browser data is cleared.', 
+                    'admin_password_label': 'Admin Password:',
+                    'back_to_main_button': 'Back', 
+                    'alert_comment_message_required': "Please enter your comment.", 
                     'no_poses_defined': "No poses defined.",
                     'anonymous_user': 'Anonymous',
                     // Card Categories
@@ -791,7 +1050,7 @@
                 { id: 49, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "ĐỔI VAI! Đối phương rút lá tiếp theo thay bạn.", en: "SWITCH ROLES! Partner draws the next card instead of you."}, icon: "🔄" },
                 { id: 50, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TRÚNG THƯỞNG! Bạn được chọn 1 lá bất kỳ đã qua để thực hiện lại (nếu có).", en: "PRIZE! You get to choose any previous card to do again (if applicable)."}, icon: "🏆" },
                 { id: 51, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHIA SẺ! Cả hai cùng kể một bí mật nhỏ chưa từng nói.", en: "SHARE! Both share a small, unsaid secret."}, icon: "💬" },
-                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "�👚" },
+                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "🔥👚" },
                 { id: 53, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "THẬT THÀ! Đối phương phải trả lời thật lòng 1 câu hỏi bất kỳ của bạn.", en: "TRUTHFUL! Partner must honestly answer any one question from you."}, icon: "🗣️❓" },
                 { id: 54, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NHANH NHƯ CHỚP! Cả hai cùng hôn nhau 5 kiểu khác nhau trong 30 giây.", en: "LIGHTNING FAST! Both kiss each other 5 different ways in 30 seconds."}, icon: "⚡💋" },
                 { id: 55, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TẠM DỪNG! Dừng chơi 5 phút để trò chuyện hoặc làm gì tùy thích.", en: "PAUSE! Stop playing for 5 minutes to chat or do whatever you like."}, icon: "⏸️" },
@@ -912,8 +1171,8 @@
                     }
                 }
                 updateCardsRemainingDisplay();
-                if (musicToggle) {
-                     musicToggle.textContent = (translations[currentLanguage] && (isMusicPlaying ? translations[currentLanguage]['pause_music_button'] : translations[currentLanguage]['play_music_button'])) || (isMusicPlaying ? translations['vi']['pause_music_button'] : translations['vi']['play_music_button']);
+                if (youtubeAudioToggleButton) { 
+                     youtubeAudioToggleButton.innerHTML = (translations[currentLanguage] && (isYoutubeAudioPlaying ? translations[currentLanguage]['pause_youtube_audio_button'] : translations[currentLanguage]['play_youtube_audio_button'])) || (isYoutubeAudioPlaying ? translations['vi']['pause_youtube_audio_button'] : translations['vi']['play_youtube_audio_button']);
                 }
             }
             
@@ -964,6 +1223,16 @@
                 if (pageToShow) {
                     pageToShow.classList.add('active');
                 }
+
+                const isCommentPage = pageId === 'commentFeedPage';
+                if (topBarControls) {
+                    topBarControls.classList.toggle('hidden', isCommentPage);
+                    document.body.style.paddingTop = isCommentPage ? '20px' : '70px';
+                }
+                if (openCommentPageButton) {
+                    openCommentPageButton.classList.toggle('hidden', isCommentPage);
+                }
+
             }
             
             if (startGameButton) {
@@ -986,8 +1255,24 @@
             }
 
             function initializeDeck() {
-                workingDeck = [...cardData];
-                shuffleArray(workingDeck);
+                const steamyPoseCategoryVI = translations['vi']['Tư Thế Nóng Bỏng'];
+                const steamyPoseCategoryEN = translations['en']['Steamy Pose'];
+
+                let normalCards = [];
+                let steamyCards = [];
+
+                cardData.forEach(card => {
+                    if (card.category.vi === steamyPoseCategoryVI || card.category.en === steamyPoseCategoryEN) {
+                        steamyCards.push(card);
+                    } else {
+                        normalCards.push(card);
+                    }
+                });
+
+                shuffleArray(normalCards);
+                shuffleArray(steamyCards);
+                workingDeck = [...normalCards, ...steamyCards];
+                
                 drawnCardsHistory = [];
                 updateCardsRemainingDisplay(); 
                 
@@ -1113,37 +1398,84 @@
                 }
             }
             
-            function toggleMusic() {
-                 if (Tone.context.state !== 'running') {
-                    Tone.start().then(() => { 
-                        actualToggleMusic();
-                    }).catch(e => console.error("Tone.start error in toggleMusic:", e));
+            // --- YouTube Audio Logic ---
+            function onYouTubeIframeAPIReady() {
+                if(ytPlayer) return; 
+                ytPlayer = new YT.Player('youtube-player', {
+                    height: '0', 
+                    width: '0',  
+                    videoId: YOUTUBE_VIDEO_ID,
+                    playerVars: {
+                        'autoplay': 0, 
+                        'controls': 0, 
+                        'loop': 1,     
+                        'playlist': YOUTUBE_VIDEO_ID 
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady; 
+
+            function onPlayerReady(event) {
+                // Player sẵn sàng
+            }
+
+            function onPlayerStateChange(event) {
+                const langPack = translations[currentLanguage] || translations['vi'];
+                if (event.data == YT.PlayerState.PLAYING) {
+                    isYoutubeAudioPlaying = true;
+                    if (youtubeAudioToggleButton) youtubeAudioToggleButton.innerHTML = langPack.pause_youtube_audio_button || '⏸️ Tắt Nhạc';
                 } else {
-                    actualToggleMusic();
+                    isYoutubeAudioPlaying = false;
+                     if (youtubeAudioToggleButton) youtubeAudioToggleButton.innerHTML = langPack.play_youtube_audio_button || '▶️ Nghe Nhạc';
                 }
             }
 
-            function actualToggleMusic() {
-                const playText = (translations[currentLanguage] && translations[currentLanguage]['play_music_button']) || "▶️ Mở Nhạc";
-                const pauseText = (translations[currentLanguage] && translations[currentLanguage]['pause_music_button']) || "⏸️ Tắt Nhạc";
-                if (isMusicPlaying) {
-                    if(backgroundMusic) backgroundMusic.pause();
-                    if(musicToggle) musicToggle.textContent = playText;
-                } else {
-                    if (backgroundMusic && backgroundMusic.currentSrc && backgroundMusic.currentSrc.includes("YOUR_MUSIC_FILE.mp3") && !backgroundMusic.src.startsWith("blob:")) {
-                        alert((translations[currentLanguage] && translations[currentLanguage]['alert_music_file_missing']) || "Vui lòng thay thế 'YOUR_MUSIC_FILE.mp3' trong mã nguồn bằng đường dẫn file nhạc của bạn!");
-                        return;
-                    }
-                    if(backgroundMusic) backgroundMusic.play().catch(error => {
-                        console.error("Lỗi phát nhạc:", error);
-                        if (error.name === "NotAllowedError") {
-                            alert((translations[currentLanguage] && translations[currentLanguage]['alert_music_autoplay_blocked']) || "Trình duyệt có thể đã chặn tự động phát nhạc. Hãy thử tương tác với trang (ví dụ: nhấn nút) trước khi bật nhạc, hoặc kiểm tra cài đặt tự động phát của trình duyệt.");
-                        }
-                    });
-                    if(musicToggle) musicToggle.textContent = pauseText;
+            function toggleYoutubeAudio() {
+                if (Tone.context.state !== 'running') {
+                    Tone.start().catch(e => console.error("Tone.start error in toggleYoutubeAudio:", e));
                 }
-                isMusicPlaying = !isMusicPlaying;
+                if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
+                    console.log("YouTube Player not ready yet.");
+                    if (!window.YT || !window.YT.Player) { 
+                        var tag = document.createElement('script');
+                        tag.src = "https://www.youtube.com/iframe_api";
+                        var firstScriptTag = document.getElementsByTagName('script')[0];
+                        if (firstScriptTag && firstScriptTag.parentNode) {
+                             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                        } else {
+                            document.head.appendChild(tag);
+                        }
+                    } else if (!ytPlayer) { 
+                         onYouTubeIframeAPIReady(); 
+                    }
+                    return;
+                }
+
+                if (isYoutubeAudioPlaying) {
+                    ytPlayer.pauseVideo();
+                } else {
+                    ytPlayer.playVideo();
+                }
             }
+
+            if (youtubeAudioToggleButton) {
+                youtubeAudioToggleButton.addEventListener('click', toggleYoutubeAudio);
+            }
+            
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            if (firstScriptTag && firstScriptTag.parentNode) {
+                 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            } else {
+                document.head.appendChild(tag);
+            }
+            // --------------------------
+
 
             function displayRandomPredefinedPose() {
                 if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in displayRandomPredefinedPose:", e)); 
@@ -1178,7 +1510,133 @@
                 if(poseModal) poseModal.style.display = 'none'; 
             });
             
-            // --- COMMENT FEED PAGE LOGIC (ĐÃ BỊ XÓA) ---
+            // --- COMMENT FEED PAGE LOGIC ---
+            const adminUsername = "dev team";
+            const adminPasswordValue = "22042412";
+            const emojis = ['💖', '🔥', '💋', '😈', '😂', '👍', '🤔', '🎉', '🥂', '💦', '🍆', '🍑'];
+
+            function populateEmojiPicker() {
+                if (!emojiPicker) return;
+                emojiPicker.innerHTML = '';
+                emojis.forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.textContent = emoji;
+                    emojiSpan.addEventListener('click', () => {
+                        if(commentMessageInput) {
+                            const cursorPos = commentMessageInput.selectionStart;
+                            const textBefore = commentMessageInput.value.substring(0, cursorPos);
+                            const textAfter = commentMessageInput.value.substring(cursorPos);
+                            commentMessageInput.value = textBefore + emoji + textAfter;
+                            commentMessageInput.focus();
+                            commentMessageInput.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+                        }
+                    });
+                    emojiPicker.appendChild(emojiSpan);
+                });
+            }
+
+            if(toggleEmojiPickerButton && emojiPicker){
+                toggleEmojiPickerButton.addEventListener('click', () => {
+                    emojiPicker.classList.toggle('visible');
+                });
+            }
+
+
+            if(openCommentPageButton) { 
+                openCommentPageButton.addEventListener('click', () => {
+                    if (landingPageSection && landingPageSection.classList.contains('active')) {
+                        previousPage = 'landing';
+                    } else if (gameContainer && gameContainer.classList.contains('active')) {
+                        previousPage = 'game';
+                    }
+                    showPage('commentFeedPage');
+                    loadComments(); 
+                    populateEmojiPicker();
+                });
+            }
+            if(backToGameFromCommentsButton) {
+                backToGameFromCommentsButton.addEventListener('click', () => {
+                    showPage(previousPage === 'game' ? 'gameContainer' : 'landingPageSection');
+                });
+            }
+            
+            if(commentUserInput) {
+                commentUserInput.addEventListener('input', () => {
+                    if (commentUserInput.value.toLowerCase() === adminUsername) {
+                        if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'block';
+                    } else {
+                        if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none';
+                        if(adminFeedPasswordInput) adminFeedPasswordInput.value = ''; 
+                    }
+                });
+            }
+
+            function loadComments() {
+                if(!commentFeedDisplayArea) return; 
+                commentFeedDisplayArea.innerHTML = ''; 
+                const comments = JSON.parse(localStorage.getItem('loveDeckComments')) || [];
+                comments.forEach(comment => {
+                    displayComment(comment.user, comment.message, comment.timestamp, comment.isAdmin);
+                });
+            }
+
+            function saveComment(user, message, isAdmin) {
+                const comments = JSON.parse(localStorage.getItem('loveDeckComments')) || [];
+                const timestamp = new Date().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
+                comments.push({ user, message, timestamp, isAdmin });
+                localStorage.setItem('loveDeckComments', JSON.stringify(comments));
+                return { user, message, timestamp, isAdmin };
+            }
+
+            function displayComment(user, message, timestamp, isAdmin) {
+                if(!commentFeedDisplayArea) return; 
+                const commentItem = document.createElement('div');
+                commentItem.classList.add('comment-item');
+                
+                let userNameDisplay = user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh");
+                let adminTickHTML = '';
+                if (isAdmin) {
+                    adminTickHTML = '<span class="admin-tick">👑</span>'; 
+                }
+
+                commentItem.innerHTML = `
+                    <strong>${userNameDisplay}${adminTickHTML}:</strong> 
+                    ${message.replace(/\n/g, '<br>')}
+                    <span class="timestamp">${timestamp}</span>
+                `;
+                commentFeedDisplayArea.appendChild(commentItem);
+                commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight;
+            }
+
+            if(commentForm) { 
+                 commentForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const user = commentUserInput ? commentUserInput.value.trim() : ""; 
+                    const message = commentMessageInput ? commentMessageInput.value.trim() : ""; 
+                    const password = adminFeedPasswordInput ? adminFeedPasswordInput.value : ""; 
+
+                    const currentTrans = translations[currentLanguage] || translations['vi'];
+
+                    if (!message) {
+                        alert(currentTrans['alert_comment_message_required']);
+                        return;
+                    }
+
+                    let isAdmin = false;
+                    if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
+                        isAdmin = true;
+                    }
+                    
+                    const savedComment = saveComment(user, message, isAdmin);
+                    displayComment(savedComment.user, savedComment.message, savedComment.timestamp, savedComment.isAdmin);
+                    
+                    commentForm.reset(); 
+                    if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none'; 
+                    if(emojiPicker) emojiPicker.classList.remove('visible'); 
+                });
+            }
+            // --------------------------------------
+
 
             window.addEventListener('click', (event) => {
                 if (event.target == poseModal) { 
@@ -1188,8 +1646,7 @@
 
             if(drawButton) drawButton.addEventListener('click', drawCard);
             if(resetButton) resetButton.addEventListener('click', initializeDeck);
-            if(musicToggle) musicToggle.addEventListener('click', toggleMusic);
-
+            
             initializeLanguage(); 
             showPage('landingPageSection'); 
         });
