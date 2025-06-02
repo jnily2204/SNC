@@ -6,8 +6,86 @@
     <title>Bộ Bài Yêu Thương - Hardcore Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setLogLevel, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'bobaiyeuthuong-default-appid'; 
+
+        let firebaseConfig;
+
+        if (firebaseConfigFromEnv) {
+            try {
+                firebaseConfig = JSON.parse(firebaseConfigFromEnv);
+                console.log("Using Firebase config from Canvas environment.");
+            } catch (e) {
+                console.error("Error parsing Firebase config from environment:", e);
+                firebaseConfig = { 
+                    apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg",
+                    authDomain: "drink-card-cb29c.firebaseapp.com",
+                    projectId: "drink-card-cb29c",
+                    storageBucket: "drink-card-cb29c.firebasestorage.app",
+                    messagingSenderId: "456377342174",
+                    appId: "1:456377342174:web:f05d53bae1f978cacb4a4f",
+                    measurementId: "G-1X7FGEB7NS"
+                };
+                console.warn("Using user-provided Firebase config as fallback or due to parsing error.");
+            }
+        } else {
+            firebaseConfig = { 
+                apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg",
+                authDomain: "drink-card-cb29c.firebaseapp.com",
+                projectId: "drink-card-cb29c",
+                storageBucket: "drink-card-cb29c.firebasestorage.app",
+                messagingSenderId: "456377342174",
+                appId: "1:456377342174:web:f05d53bae1f978cacb4a4f",
+                measurementId: "G-1X7FGEB7NS"
+            };
+            console.log("Using user-provided Firebase config.");
+        }
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        // setLogLevel('debug'); 
+
+        window.firebaseDB = db;
+        window.firebaseAuth = auth;
+        window.firebaseAppId = appIdFromEnv; 
+        window.firebaseServerTimestamp = serverTimestamp;
+        window.firebaseCollection = collection;
+        window.firebaseAddDoc = addDoc;
+        window.firebaseQuery = query;
+        window.firebaseOrderBy = orderBy;
+        window.firebaseOnSnapshot = onSnapshot;
+        window.firebaseSignInAnonymously = signInAnonymously;
+        window.firebaseSignInWithCustomToken = signInWithCustomToken;
+        window.firebaseOnAuthStateChanged = onAuthStateChanged;
+        window.firebaseDoc = doc; 
+        window.firebaseGetDoc = getDoc; 
+        window.firebaseUpdateDoc = updateDoc; 
+        window.firebaseDeleteDoc = deleteDoc; 
+
+
+        (async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                    console.log("Firebase: Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Firebase: Signed in anonymously.");
+                }
+            } catch (error) {
+                console.error("Firebase Authentication Error:", error);
+            }
+        })();
+    </script>
     <style>
-        /* CSS ĐÃ ĐƯỢC CẬP NHẬT CHO COMMENT FEED PAGE VÀ TOP BAR */
+        /* CSS (Không thay đổi) */
         body {
             display: flex;
             flex-direction: column; 
@@ -18,7 +96,7 @@
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 20px;
-            /* padding-top: 70px; Sẽ được quản lý bởi JS khi top-bar hiển thị */
+            padding-top: 70px; 
             box-sizing: border-box;
             color: #F5E9F2; 
         }
@@ -501,59 +579,137 @@
             padding: 15px; 
             background-color: rgba(0,0,0,0.25);
             border-radius: 15px;
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
             border: 1px solid rgba(255,51,161,0.2);
-            max-height: calc(100vh - 320px); /* SỬA: Tăng chiều cao tối đa cho vùng hiển thị */
+            max-height: calc(100vh - 250px); 
         }
         #commentFeedDisplayArea::-webkit-scrollbar { width: 8px; }
         #commentFeedDisplayArea::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
         #commentFeedDisplayArea::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        
+        .comment-item { 
+            background-color: rgba(255,255,255,0.06); 
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #E0C8DD;
+            font-size: 15px;
+            text-align: left;
+            word-wrap: break-word;
+            border-left: 3px solid #FF33A1; 
+        }
+        .comment-item strong { 
+            color: #FF8AD8;
+            margin-right: 8px;
+        }
+        .comment-item .admin-tick {
+            color: #FFD700; 
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        .comment-item .timestamp {
+            display: block;
+            font-size: 11px;
+            color: #A78A96;
+            margin-top: 5px;
+            text-align: right;
+        }
+        .comment-reply-button {
+            background: none;
+            border: 1px solid #8A7FFF;
+            color: #8A7FFF;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+            float: right; 
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .comment-reply-button:hover {
+            background-color: #8A7FFF;
+            color: #1D111C;
+        }
+        .replies-container {
+            margin-left: 25px; 
+            margin-top: 8px;
+            border-left: 2px solid rgba(255, 105, 180, 0.3);
+            padding-left: 10px;
+        }
+        .reply-form-container {
+            margin-left: 25px;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 6px;
+        }
+        .reply-form-container textarea {
+            width: calc(100% - 16px);
+            padding: 8px;
+            font-size: 13px;
+            height: 40px;
+            border-radius: 6px;
+            background-color: rgba(255,255,255,0.05);
+            color: #F5E9F2;
+            border: 1px solid #5A4FCF;
+            margin-bottom: 5px;
+        }
+        .reply-form-container button {
+            padding: 5px 10px;
+            font-size: 13px;
+            background: linear-gradient(145deg, #5A4FCF, #3D32AA);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
 
         .comment-feed-page #commentFeedForm { 
             width: 100%;
             max-width: 600px; 
-            margin: 0 auto 10px auto; /* Giảm margin bottom */
+            margin: 0 auto 10px auto; 
             display: flex; 
             flex-direction: column; 
-            gap: 8px; /* Giảm gap */
+            gap: 8px; 
         }
         .comment-feed-page #commentFeedForm label {
              color: #FF8AD8;
              font-weight: bold;
-             font-size: 14px; /* Giảm font label */
+             font-size: 13px; 
              text-align: left;
              display: block;
-             margin-bottom: 3px; /* Giảm margin */
+             margin-bottom: 2px; 
         }
         .comment-feed-page #commentFeedForm input[type="text"],
         .comment-feed-page #commentFeedForm input[type="password"],
         .comment-feed-page #commentFeedForm textarea {
             width: 100%; 
-            padding: 10px; /* Giảm padding */
-            margin-bottom: 10px; /* Giảm margin */
+            padding: 10px; 
+            margin-bottom: 8px; 
             border: 1px solid #5A4FCF; 
             border-radius: 8px; 
             background-color: rgba(255,255,255,0.05);
             color: #F5E9F2;
-            font-size: 15px; 
+            font-size: 14px; 
             box-sizing: border-box; 
         }
          .comment-feed-page #commentFeedForm textarea {
-            height: 70px; /* Giảm chiều cao textarea */
+            height: 60px; 
             resize: vertical;
             margin-bottom: 5px; 
         }
         .emoji-picker-container { 
             display: flex;
             align-items: center;
-            gap: 8px; /* Giảm gap */
-            margin-bottom: 10px; 
+            gap: 8px; 
+            margin-bottom: 8px; 
         }
         #toggleEmojiPickerButton {
             background: none;
             border: 1px solid #FF8AD8;
             color: #FF8AD8;
-            padding: 6px 10px; /* Giảm padding */
+            padding: 6px 10px; 
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px; 
@@ -567,20 +723,20 @@
         .emoji-picker {
             display: none; 
             flex-wrap: wrap;
-            gap: 6px; /* Giảm gap */
+            gap: 6px; 
             justify-content: flex-start; 
-            padding: 8px; /* Giảm padding */
+            padding: 6px; 
             background-color: rgba(0,0,0,0.2);
             border-radius: 6px;
-            margin-top: 5px; 
+            margin-top: 3px; 
         }
         .emoji-picker.visible {
             display: flex;
         }
         .emoji-picker span {
-            font-size: 20px; /* Giảm kích thước emoji */
+            font-size: 20px; 
             cursor: pointer;
-            padding: 3px; /* Giảm padding */
+            padding: 3px; 
             border-radius: 5px;
             transition: background-color 0.2s;
         }
@@ -590,15 +746,15 @@
 
         .comment-feed-page #commentFeedForm button[type="submit"] { 
             width: 100%; 
-            padding: 12px 20px; /* Giảm padding */
+            padding: 12px 20px; 
             margin-top: 5px; 
-            font-size: 16px; /* Giảm font */
+            font-size: 16px; 
             letter-spacing: 1px; 
             background: linear-gradient(145deg, #FF33A1, #C71585);
             color: white;
             border: 1px solid #FF33A1;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,51,161,0.6) inset;
-            border-radius: 25px; /* Giảm bo góc */
+            border-radius: 25px; 
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             cursor: pointer;
@@ -611,27 +767,20 @@
             transform: translateY(-1px);
          }
 
-        .comment-feed-page .comment-info {
-            font-size: 12px; /* Giảm font */
-            color: #B2A1B1;
-            margin-top: 8px; 
-            text-align: center; 
-        }
          #adminFeedPasswordContainer {
-            /* grid-column: 1 / -1;  Không cần nữa vì form là flex column */
          }
 
 
         .comment-feed-page .back-to-game-button {
-            margin-top: 15px; /* Giảm margin */
-            padding: 10px 20px; /* Giảm padding */
-            font-size: 16px; /* Giảm font */
+            margin-top: 15px; 
+            padding: 10px 20px; 
+            font-size: 16px; 
             background: linear-gradient(145deg, #7A0042, #B3005E); 
             color: white;
             border: 1px solid #B3005E;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(179,0,94,0.6) inset;
             align-self: center; 
-            border-radius: 25px; /* Giảm bo góc */
+            border-radius: 25px;
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             cursor: pointer;
@@ -751,15 +900,28 @@
         </p>
 
         <h2 data-translate-key="landing_prepare_title">Cần Chuẩn Bị Gì?</h2>
-        <ul data-translate-key="landing_prepare_list_items"> 
+        <ul> 
+            <li data-translate-key="landing_prepare_list_item1"></li>
+            <li data-translate-key="landing_prepare_list_item2"></li>
+            <li data-translate-key="landing_prepare_list_item3"></li>
+            <li data-translate-key="landing_prepare_list_item4"></li>
+            <li data-translate-key="landing_prepare_list_item5"></li>
         </ul>
 
         <h2 data-translate-key="landing_who_play_title">Ai Nên Chơi?</h2>
-        <ul data-translate-key="landing_who_play_list_items">
+        <ul>
+            <li data-translate-key="landing_who_play_list_item1"></li>
+            <li data-translate-key="landing_who_play_list_item2"></li>
+            <li data-translate-key="landing_who_play_list_item3"></li>
         </ul>
 
         <h2 data-translate-key="landing_when_play_title">Nên Chơi Khi Nào?</h2>
-        <ul data-translate-key="landing_when_play_list_items">
+        <ul>
+            <li data-translate-key="landing_when_play_list_item1"></li>
+            <li data-translate-key="landing_when_play_list_item2"></li>
+            <li data-translate-key="landing_when_play_list_item3"></li>
+            <li data-translate-key="landing_when_play_list_item4"></li>
+            <li data-translate-key="landing_when_play_list_item5"></li>
         </ul>
         
         <button class="cta-button" id="startGameButton" data-translate-key="landing_start_button">Bắt Đầu Cuộc Vui</button>
@@ -824,8 +986,7 @@
                 </div>
 
             <button type="submit" id="submitFeedCommentButton" data-translate-key="comment_submit_button">Đăng</button>
-            <p class="comment-info" data-translate-key="comment_local_info">Lưu ý: Bình luận được lưu cục bộ trên trình duyệt này.</p>
-        </form>
+            </form>
         <button class="back-to-game-button" id="backToGameFromComments" data-translate-key="back_to_main_button">Quay Lại</button>
     </div>
 
@@ -833,6 +994,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             let isYoutubeAudioPlaying = false; 
+            let currentReplyingTo = null; // Đảm bảo khai báo này là duy nhất và ở đầu scope
 
             const landingPageSection = document.getElementById('landingPageSection');
             const gameContainer = document.getElementById('gameContainer');
@@ -867,11 +1029,11 @@
             const commentMessageInput = document.getElementById('commentFeedMessage');
             const commentFeedDisplayArea = document.getElementById('commentFeedDisplayArea');
             const emojiPicker = document.getElementById('emojiPicker');
-            const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton');
+            const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton'); 
             
             const youtubeAudioToggleButton = document.getElementById('youtubeAudioToggle');
             let ytPlayer;
-            const YOUTUBE_VIDEO_ID = '5qap5aO4i9A'; 
+            const YOUTUBE_VIDEO_ID = 'KzBPjjxd8xg'; 
 
 
             // --- DỮ LIỆU DỊCH THUẬT ---
@@ -882,27 +1044,21 @@
                     'landing_tagline_lp': '- Hardcore Edition - <br>Đánh Thức Giác Quan, Bùng Nổ Cảm Xúc',
                     'landing_game_description': '<strong>Bộ Bài Yêu Thương - Hardcore Edition</strong> là một trò chơi thẻ bài 18+ được thiết kế đặc biệt cho các cặp đôi muốn khám phá những giới hạn mới của sự thân mật, đam mê và phiêu lưu tình ái. Với những thử thách táo bạo, câu hỏi khơi gợi và những gợi ý nóng bỏng, trò chơi này hứa hẹn mang đến những giây phút vừa hồi hộp, vừa vui vẻ, giúp hâm nóng tình yêu và tạo nên những kỷ niệm khó phai.',
                     'landing_prepare_title': 'Cần Chuẩn Bị Gì?',
-                    'landing_prepare_list_items': [ 
-                        'Không gian riêng tư, ấm cúng và hoàn toàn thoải mái.',
-                        'Đồ uống yêu thích của cả hai (rượu vang, cocktail, mocktail, hay bất cứ gì làm bạn thấy "phiêu").',
-                        'Một tâm hồn rộng mở, sẵn sàng phiêu lưu, chia sẻ và không phán xét.',
-                        'Người bạn đời/bạn tình mà bạn tin tưởng tuyệt đối và muốn cùng nhau khám phá.',
-                        '(Tùy chọn) Một chút nhạc nền du dương, quyến rũ.'
-                    ],
+                    'landing_prepare_list_item1': 'Không gian riêng tư, ấm cúng và hoàn toàn thoải mái.',
+                    'landing_prepare_list_item2': 'Đồ uống yêu thích của cả hai (rượu vang, cocktail, mocktail, hay bất cứ gì làm bạn thấy "phiêu").',
+                    'landing_prepare_list_item3': 'Một tâm hồn rộng mở, sẵn sàng phiêu lưu, chia sẻ và không phán xét.',
+                    'landing_prepare_list_item4': 'Người bạn đời/bạn tình mà bạn tin tưởng tuyệt đối và muốn cùng nhau khám phá.',
+                    'landing_prepare_list_item5': '(Tùy chọn) Một chút nhạc nền du dương, quyến rũ.',
                     'landing_who_play_title': 'Ai Nên Chơi?',
-                    'landing_who_play_list_items': [ 
-                        'Các cặp đôi đang yêu, vợ chồng muốn "thổi lửa" cho mối quan hệ.',
-                        'Những cặp đôi thích khám phá, không ngại thử thách và muốn tìm hiểu sâu hơn về những khao khát thầm kín của nhau.',
-                        'Bất kỳ ai trên 18 tuổi, có sự đồng thuận tuyệt đối và muốn thêm gia vị cho đời sống tình dục một cách vui vẻ, sáng tạo và đầy đam mê.'
-                    ],
+                    'landing_who_play_list_item1': 'Các cặp đôi đang yêu, vợ chồng muốn "thổi lửa" cho mối quan hệ.',
+                    'landing_who_play_list_item2': 'Những cặp đôi thích khám phá, không ngại thử thách và muốn tìm hiểu sâu hơn về những khao khát thầm kín của nhau.',
+                    'landing_who_play_list_item3': 'Bất kỳ ai trên 18 tuổi, có sự đồng thuận tuyệt đối và muốn thêm gia vị cho đời sống tình dục một cách vui vẻ, sáng tạo và đầy đam mê.',
                     'landing_when_play_title': 'Nên Chơi Khi Nào?',
-                    'landing_when_play_list_items': [ 
-                        'Những buổi tối hẹn hò đặc biệt, chỉ có hai người.',
-                        'Dịp kỷ niệm tình yêu, ngày cưới, hoặc một dấu mốc quan trọng.',
-                        'Khi bạn muốn phá vỡ sự nhàm chán, tìm kiếm những trải nghiệm mới mẻ và mãnh liệt hơn.',
-                        'Trong những chuyến du lịch lãng mạn, tạo thêm điểm nhấn khó quên cho kỳ nghỉ.',
-                        'Bất cứ khi nào cả hai cảm thấy sẵn sàng cho một cuộc phiêu lưu tình ái đầy bất ngờ!'
-                    ],
+                    'landing_when_play_list_item1': 'Những buổi tối hẹn hò đặc biệt, chỉ có hai người.',
+                    'landing_when_play_list_item2': 'Dịp kỷ niệm tình yêu, ngày cưới, hoặc một dấu mốc quan trọng.',
+                    'landing_when_play_list_item3': 'Khi bạn muốn phá vỡ sự nhàm chán, tìm kiếm những trải nghiệm mới mẻ và mãnh liệt hơn.',
+                    'landing_when_play_list_item4': 'Trong những chuyến du lịch lãng mạn, tạo thêm điểm nhấn khó quên cho kỳ nghỉ.',
+                    'landing_when_play_list_item5': 'Bất cứ khi nào cả hai cảm thấy sẵn sàng cho một cuộc phiêu lưu tình ái đầy bất ngờ!',
                     'landing_start_button': 'Bắt Đầu Cuộc Vui',
                     'game_main_title': 'Bộ Bài Yêu Thương',
                     'game_tagline': 'Đêm nay... không còn giới hạn',
@@ -920,9 +1076,11 @@
                     'comment_user_label': 'Tên của bạn (hiển thị):', 
                     'comment_message_label': 'Chia sẻ của bạn:', 
                     'comment_submit_button': 'Đăng', 
-                    'comment_local_info': 'Lưu ý: Bình luận được lưu cục bộ trên trình duyệt này.', 
                     'admin_password_label': 'Mật khẩu Admin:',
                     'back_to_main_button': 'Quay Lại', 
+                    'reply_button_text': 'Trả lời',
+                    'submit_reply_button_text': 'Gửi Trả Lời',
+                    'cancel_reply_button_text': 'Hủy',
                     'no_poses_defined': "Không có tư thế nào được định nghĩa.",
                     'anonymous_user': 'Ẩn danh',
                     // Card Categories
@@ -939,27 +1097,21 @@
                     'landing_tagline_lp': '- Hardcore Edition - <br>Awaken Senses, Ignite Emotions',
                     'landing_game_description': '<strong>Love Cards Deck - Hardcore Edition</strong> is an 18+ card game specially designed for couples who want to explore new limits of intimacy, passion, and amorous adventure. With daring challenges, evocative questions, and steamy suggestions, this game promises moments of thrill and fun, helping to spice up love and create unforgettable memories.',
                     'landing_prepare_title': 'What to Prepare?',
-                     'landing_prepare_list_items': [ 
-                        'A private, cozy, and completely comfortable space.',
-                        'Your favorite drinks (wine, cocktails, mocktails, or anything that gets you in the mood).',
-                        'An open mind, ready for adventure, sharing, and no judgment.',
-                        'A partner you absolutely trust and want to explore with.',
-                        '(Optional) Some smooth, seductive background music.'
-                    ],
+                     'landing_prepare_list_item1': 'A private, cozy, and completely comfortable space.', 
+                     'landing_prepare_list_item2': 'Your favorite drinks (wine, cocktails, mocktails, or anything that gets you in the mood).',
+                     'landing_prepare_list_item3': 'An open mind, ready for adventure, sharing, and no judgment.',
+                     'landing_prepare_list_item4': 'A partner you absolutely trust and want to explore with.',
+                     'landing_prepare_list_item5': '(Optional) Some smooth, seductive background music.',
                     'landing_who_play_title': 'Who Should Play?',
-                    'landing_who_play_list_items': [ 
-                        'Couples in love, spouses wanting to "reignite the flame."',
-                        'Couples who love exploring, aren\'t afraid of challenges, and want to delve deeper into each other\'s hidden desires.',
-                        'Anyone over 18, with absolute consent, wanting to spice up their sex life in a fun, creative, and passionate way.'
-                    ],
+                    'landing_who_play_list_item1': 'Couples in love, spouses wanting to "reignite the flame."', 
+                    'landing_who_play_list_item2': 'Couples who love exploring, aren\'t afraid of challenges, and want to delve deeper into each other\'s hidden desires.',
+                    'landing_who_play_list_item3': 'Anyone over 18, with absolute consent, wanting to spice up their sex life in a fun, creative, and passionate way.',
                     'landing_when_play_title': 'When to Play?',
-                    'landing_when_play_list_items': [ 
-                        'Special date nights, just the two of you.',
-                        'Love anniversaries, wedding anniversaries, or important milestones.',
-                        'When you want to break the monotony, seeking new and more intense experiences.',
-                        'During romantic getaways, adding an unforgettable highlight to your vacation.',
-                        'Whenever you both feel ready for an amorous adventure full of surprises!'
-                    ],
+                    'landing_when_play_list_item1': 'Special date nights, just the two of you.', 
+                    'landing_when_play_list_item2': 'Love anniversaries, wedding anniversaries, or important milestones.',
+                    'landing_when_play_list_item3': 'When you want to break the monotony, seeking new and more intense experiences.',
+                    'landing_when_play_list_item4': 'During romantic getaways, adding an unforgettable highlight to your vacation.',
+                    'landing_when_play_list_item5': 'Whenever you both feel ready for an amorous adventure full of surprises!',
                     'landing_start_button': 'Start the Fun',
                     'game_main_title': 'Love Cards Deck',
                     'game_tagline': 'Tonight... there are no limits',
@@ -972,14 +1124,16 @@
                     'no_cards_left_text': 'No cards left! Play again or share your thoughts?', 
                     'play_youtube_audio_button': '▶️ Play Music', 
                     'pause_youtube_audio_button': '⏸️ Pause Music', 
-                    'pose_modal_title_text': '🔥 Random 21+ Pose �',
+                    'pose_modal_title_text': '🔥 Random 21+ Pose 🔥',
                     'comment_page_title': 'Wall of Emotions & Comments', 
                     'comment_user_label': 'Your Name (display):', 
                     'comment_message_label': 'Your comment:', 
                     'comment_submit_button': 'Post', 
-                    'comment_local_info': 'Note: Comments are stored locally in this browser and will be lost if browser data is cleared.', 
                     'admin_password_label': 'Admin Password:',
                     'back_to_main_button': 'Back', 
+                    'reply_button_text': 'Reply',
+                    'submit_reply_button_text': 'Post Reply',
+                    'cancel_reply_button_text': 'Cancel',
                     'alert_comment_message_required': "Please enter your comment.", 
                     'no_poses_defined': "No poses defined.",
                     'anonymous_user': 'Anonymous',
@@ -1058,7 +1212,7 @@
                 { id: 57, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NỤ HÔN BẤT NGỜ! Nhắm mắt lại, đối phương sẽ hôn bạn ở một nơi bất ngờ.", en: "SURPRISE KISS! Close your eyes, partner will kiss you in an unexpected place."}, icon: "😘🙈" },
                 { id: 58, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TIẾT LỘ! Tiết lộ một điều bạn thích về cách đối phương \"yêu\".", en: "REVEAL! Reveal something you like about how your partner makes love."}, icon: "💖" },
                 { id: 59, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHỌN MỘT! Đối phương được chọn: cởi 1 món đồ hoặc uống 2 ly.", en: "CHOOSE ONE! Partner chooses: remove 1 item of clothing or take 2 drinks."}, icon: "⚖️" },
-                { id: 60, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "KẾT THÚC NGỌT NGÀO! Cả hai cùng uống cạn ly và ôm hôn nhau thật lâu.", en: "SWEET ENDING! Both finish your drinks and share a long, loving hug and kiss."}, icon: "🔚❤️" },
+                { id: 60, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "KẾT THÚC NGỌT NGÀO! Cả hai cùng uống cạn ly và ôm hôn nhau thật lâu.", en: "SWEET ENDING! Both finish your drinks and share a long, loving hug and kiss."}, icon: "�❤️" },
                 // Tư Thế Nóng Bỏng (10)
                 { id: 61, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Cùng nhau thử tư thế \"Úp thìa\" và cảm nhận sự gần gũi.", en: "Try the \"Spooning\" position together and feel the closeness."}, icon: "🛌🥄" },
                 { id: 62, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Gợi ý tư thế \"Nữ cao bồi\". Ai sẽ là người dẫn dắt?", en: "Suggest the \"Cowgirl\" position. Who will take the lead?"}, icon: "🤠🏇" },
@@ -1105,6 +1259,7 @@
             let drawnCardsHistory = [];
             let currentLanguage = 'vi'; 
             let previousPage = 'landing'; 
+            // let currentReplyingTo = null; // Đã khai báo ở trên, đảm bảo chỉ có một
 
             // Các phần tử DOM của game (đã được khai báo ở đầu)
 
@@ -1132,7 +1287,9 @@
                     const key = element.dataset.translateKey;
                     const langPack = translations[currentLanguage] || translations['vi']; 
 
-                    if (element.tagName === 'UL' && langPack[key] && Array.isArray(langPack[key])) { 
+                    if (langPack[key] && typeof langPack[key] === 'string') { 
+                        element.innerHTML = langPack[key];
+                    } else if (element.tagName === 'UL' && langPack[key] && Array.isArray(langPack[key])) { 
                         let listHTML = '';
                         const listItemsArray = langPack[key]; 
                         listItemsArray.forEach(itemText => {
@@ -1144,8 +1301,6 @@
                             }
                         });
                         element.innerHTML = listHTML; 
-                    } else if (langPack[key] && typeof langPack[key] === 'string') { 
-                        element.innerHTML = langPack[key];
                     } else {
                         const defaultLangPack = translations['vi'];
                          if (defaultLangPack && defaultLangPack[key] && typeof defaultLangPack[key] === 'string') {
@@ -1551,7 +1706,9 @@
                     }
                     showPage('commentFeedPage');
                     loadComments(); 
-                    populateEmojiPicker();
+                    if (emojiPicker && !emojiPicker.innerHTML) { 
+                        populateEmojiPicker();
+                    }
                 });
             }
             if(backToGameFromCommentsButton) {
@@ -1571,45 +1728,203 @@
                 });
             }
 
-            function loadComments() {
-                if(!commentFeedDisplayArea) return; 
-                commentFeedDisplayArea.innerHTML = ''; 
-                const comments = JSON.parse(localStorage.getItem('loveDeckComments')) || [];
-                comments.forEach(comment => {
-                    displayComment(comment.user, comment.message, comment.timestamp, comment.isAdmin);
+            async function loadComments() { 
+                if (!commentFeedDisplayArea || !window.firebaseDB || !window.firebaseAppId) {
+                    console.warn("Firestore DB or App ID not available for loading comments.");
+                    return;
+                }
+                
+                const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
+                const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
+                const q = window.firebaseQuery(commentsCol, window.firebaseOrderBy("timestamp", "asc")); 
+
+                window.firebaseOnSnapshot(q, (querySnapshot) => {
+                    commentFeedDisplayArea.innerHTML = ''; 
+                    const allComments = [];
+                    querySnapshot.forEach((doc) => {
+                        allComments.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    const commentTree = {};
+                    const topLevelComments = [];
+
+                    allComments.forEach(comment => {
+                        comment.replies = []; 
+                        commentTree[comment.id] = comment;
+                        if (comment.parentId) {
+                            if (commentTree[comment.parentId]) {
+                                commentTree[comment.parentId].replies.push(comment);
+                            } else {
+                                topLevelComments.push(comment); 
+                            }
+                        } else {
+                            topLevelComments.push(comment);
+                        }
+                    });
+                    
+                    topLevelComments.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
+
+
+                    topLevelComments.forEach(comment => {
+                        displayCommentWithReplies(comment, commentFeedDisplayArea, 0);
+                    });
+
+                    if(commentFeedDisplayArea) commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight;
+                }, (error) => {
+                    console.error("Error loading comments: ", error);
+                    if(commentFeedDisplayArea) commentFeedDisplayArea.innerHTML = "<li>Lỗi tải bình luận. Vui lòng thử lại sau.</li>";
                 });
             }
+            
+            function displayCommentWithReplies(comment, container, depth) {
+                const commentElement = createCommentElement(comment, depth);
+                container.appendChild(commentElement);
 
-            function saveComment(user, message, isAdmin) {
-                const comments = JSON.parse(localStorage.getItem('loveDeckComments')) || [];
-                const timestamp = new Date().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
-                comments.push({ user, message, timestamp, isAdmin });
-                localStorage.setItem('loveDeckComments', JSON.stringify(comments));
-                return { user, message, timestamp, isAdmin };
+                if (comment.replies && comment.replies.length > 0) {
+                    const repliesContainer = document.createElement('div');
+                    repliesContainer.classList.add('replies-container');
+                    if (depth > 0) { 
+                        repliesContainer.style.marginLeft = `${depth * 15 + 25}px`;
+                    }
+                    commentElement.appendChild(repliesContainer);
+                    comment.replies.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
+                    comment.replies.forEach(reply => {
+                        displayCommentWithReplies(reply, repliesContainer, depth + 1);
+                    });
+                }
             }
 
-            function displayComment(user, message, timestamp, isAdmin) {
-                if(!commentFeedDisplayArea) return; 
+
+            function createCommentElement(commentData, depth) {
                 const commentItem = document.createElement('div');
                 commentItem.classList.add('comment-item');
+                commentItem.dataset.commentId = commentData.id; 
+                if (depth > 0) {
+                    commentItem.style.marginLeft = `${depth * 10}px`; 
+                }
                 
-                let userNameDisplay = user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh");
+                let userNameDisplay = commentData.user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh");
                 let adminTickHTML = '';
-                if (isAdmin) {
-                    adminTickHTML = '<span class="admin-tick">👑</span>'; 
+                if (commentData.isAdmin) {
+                    adminTickHTML = '<span class="admin-tick">⭐</span>'; 
                 }
 
+                const sanitizedMessage = (commentData.message || "").replace(/</g, "<").replace(/>/g, ">");
+                let commentTimestamp = "Đang tải...";
+                if (commentData.timestamp && typeof commentData.timestamp.toDate === 'function') {
+                    commentTimestamp = commentData.timestamp.toDate().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
+                } else if (commentData.timestamp) { 
+                     commentTimestamp = new Date(commentData.timestamp).toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
+                }
+
+
                 commentItem.innerHTML = `
-                    <strong>${userNameDisplay}${adminTickHTML}:</strong> 
-                    ${message.replace(/\n/g, '<br>')}
-                    <span class="timestamp">${timestamp}</span>
+                    <div>
+                        <strong>${userNameDisplay}${adminTickHTML}:</strong> 
+                        ${sanitizedMessage.replace(/\n/g, '<br>')}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                        <span class="timestamp">${commentTimestamp}</span>
+                        <button class="comment-reply-button" data-translate-key="reply_button_text">${translations[currentLanguage]?.reply_button_text || 'Trả lời'}</button>
+                    </div>
                 `;
-                commentFeedDisplayArea.appendChild(commentItem);
-                commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight;
+
+                const replyButton = commentItem.querySelector('.comment-reply-button');
+                if (replyButton) {
+                    replyButton.addEventListener('click', () => showReplyForm(commentData.id, commentItem));
+                }
+                return commentItem;
             }
 
+            function showReplyForm(parentId, parentCommentElement) {
+                const existingReplyForm = parentCommentElement.querySelector('.reply-form-container');
+                if (existingReplyForm) {
+                    existingReplyForm.remove();
+                    currentReplyingTo = null; 
+                    return; 
+                }
+                document.querySelectorAll('.reply-form-container').forEach(form => form.remove());
+
+
+                currentReplyingTo = parentId; 
+
+                const replyFormContainer = document.createElement('div');
+                replyFormContainer.classList.add('reply-form-container');
+
+                const replyTextarea = document.createElement('textarea');
+                replyTextarea.rows = 2;
+                replyTextarea.placeholder = "Viết trả lời...";
+
+                const submitReplyButton = document.createElement('button');
+                submitReplyButton.textContent = translations[currentLanguage]?.submit_reply_button_text || 'Gửi Trả Lời';
+                submitReplyButton.type = 'button'; 
+
+                const cancelReplyButton = document.createElement('button');
+                cancelReplyButton.textContent = translations[currentLanguage]?.cancel_reply_button_text || 'Hủy';
+                cancelReplyButton.type = 'button';
+                cancelReplyButton.style.marginLeft = '5px';
+                cancelReplyButton.style.background = 'grey';
+
+
+                submitReplyButton.onclick = async () => {
+                    const replyMessage = replyTextarea.value.trim();
+                    if (replyMessage) {
+                        const user = commentUserInput.value.trim(); 
+                        const password = adminFeedPasswordInput.value;
+                        let isAdminReply = false;
+                        if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
+                            isAdminReply = true;
+                        }
+                        await saveComment(user, replyMessage, isAdminReply, currentReplyingTo); 
+                        replyFormContainer.remove(); 
+                        currentReplyingTo = null; 
+                    }
+                };
+                
+                cancelReplyButton.onclick = () => {
+                    replyFormContainer.remove();
+                    currentReplyingTo = null; 
+                };
+
+                replyFormContainer.appendChild(replyTextarea);
+                replyFormContainer.appendChild(submitReplyButton);
+                replyFormContainer.appendChild(cancelReplyButton);
+                parentCommentElement.appendChild(replyFormContainer);
+                replyTextarea.focus();
+            }
+
+
+            async function saveComment(user, message, isAdmin, parentId = null) { 
+                if (!window.firebaseDB || !window.firebaseAuth || !window.firebaseAuth.currentUser || !window.firebaseAppId) {
+                    console.error("Firebase not initialized or user not authenticated for saving comment.");
+                    alert("Không thể gửi bình luận. Vui lòng thử lại sau.");
+                    return null; 
+                }
+                const userIdAuth = window.firebaseAuth.currentUser.uid;
+
+                try {
+                    const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
+                    const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
+                    const commentData = {
+                        userId: userIdAuth, 
+                        user: user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh"),
+                        message: message,
+                        isAdmin: isAdmin,
+                        timestamp: window.firebaseServerTimestamp() 
+                    };
+                    if (parentId) {
+                        commentData.parentId = parentId;
+                    }
+                    await window.firebaseAddDoc(commentsCol, commentData);
+                } catch (error) {
+                    console.error("Error adding comment: ", error);
+                    alert("Lỗi khi gửi bình luận. Vui lòng thử lại.");
+                }
+            }
+
+
             if(commentForm) { 
-                 commentForm.addEventListener('submit', (event) => {
+                 commentForm.addEventListener('submit', async (event) => { 
                     event.preventDefault();
                     const user = commentUserInput ? commentUserInput.value.trim() : ""; 
                     const message = commentMessageInput ? commentMessageInput.value.trim() : ""; 
@@ -1618,17 +1933,27 @@
                     const currentTrans = translations[currentLanguage] || translations['vi'];
 
                     if (!message) {
-                        alert(currentTrans['alert_comment_message_required']);
+                        const messageLabel = document.querySelector('label[for="commentFeedMessage"]');
+                        if (messageLabel) {
+                            messageLabel.textContent = currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận.";
+                            messageLabel.style.color = "#FF33A1";
+                            setTimeout(() => {
+                                messageLabel.textContent = currentTrans['comment_message_label'] || "Chia sẻ của bạn:";
+                                messageLabel.style.color = "#FF8AD8";
+                            }, 3000);
+                        } else {
+                            alert(currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận của bạn.");
+                        }
                         return;
                     }
+
 
                     let isAdmin = false;
                     if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
                         isAdmin = true;
                     }
                     
-                    const savedComment = saveComment(user, message, isAdmin);
-                    displayComment(savedComment.user, savedComment.message, savedComment.timestamp, savedComment.isAdmin);
+                    await saveComment(user, message, isAdmin, null); 
                     
                     commentForm.reset(); 
                     if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none'; 
