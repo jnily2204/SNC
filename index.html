@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bộ Bài Yêu Thương - Hardcore Edition</title>
+    <title>Spicy Night Drink Card - Hardcore Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setLogLevel, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setLogLevel, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Firestore không còn cần thiết nếu bỏ bình luận
 
         const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'bobaiyeuthuong-default-appid'; 
+        // const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'spicynightdrinkcard-default-appid'; // Không cần appId nếu không dùng Firestore
 
         let firebaseConfig;
 
@@ -23,9 +23,8 @@
                 console.log("Using Firebase config from Canvas environment.");
             } catch (e) {
                 console.error("Error parsing Firebase config from environment:", e);
-                // Fallback to user-provided or default config if parsing fails or env var is missing
                 firebaseConfig = { 
-                    apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", // Replace with your actual Firebase config
+                    apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", 
                     authDomain: "drink-card-cb29c.firebaseapp.com",
                     projectId: "drink-card-cb29c",
                     storageBucket: "drink-card-cb29c.firebasestorage.app",
@@ -36,9 +35,8 @@
                 console.warn("Using user-provided Firebase config as fallback or due to parsing error.");
             }
         } else {
-            // Fallback to user-provided or default config if env var is missing
              firebaseConfig = { 
-                apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", // Replace with your actual Firebase config
+                apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", 
                 authDomain: "drink-card-cb29c.firebaseapp.com",
                 projectId: "drink-card-cb29c",
                 storageBucket: "drink-card-cb29c.firebasestorage.app",
@@ -51,29 +49,28 @@
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
-        // setLogLevel('debug'); // Uncomment for Firestore debugging
+        // const db = getFirestore(app); // Không cần Firestore nếu bỏ bình luận
+        // setLogLevel('debug');
 
-        // Make Firebase services globally available (consider a more encapsulated approach for larger apps)
-        window.firebaseDB = db;
+        // window.firebaseDB = db; // Không cần Firestore
         window.firebaseAuth = auth;
-        window.firebaseAppId = appIdFromEnv; // Use the app ID from environment or default
-        window.firebaseServerTimestamp = serverTimestamp;
-        window.firebaseCollection = collection;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseQuery = query;
-        window.firebaseOrderBy = orderBy;
-        window.firebaseOnSnapshot = onSnapshot;
+        // window.firebaseAppId = appIdFromEnv; // Không cần AppId nếu không dùng Firestore
+        // window.firebaseServerTimestamp = serverTimestamp; // Không cần Firestore
+        // window.firebaseCollection = collection; // Không cần Firestore
+        // window.firebaseAddDoc = addDoc; // Không cần Firestore
+        // window.firebaseQuery = query; // Không cần Firestore
+        // window.firebaseOrderBy = orderBy; // Không cần Firestore
+        // window.firebaseOnSnapshot = onSnapshot; // Không cần Firestore
         window.firebaseSignInAnonymously = signInAnonymously;
         window.firebaseSignInWithCustomToken = signInWithCustomToken;
         window.firebaseOnAuthStateChanged = onAuthStateChanged;
-        window.firebaseDoc = doc; 
-        window.firebaseGetDoc = getDoc; 
-        window.firebaseUpdateDoc = updateDoc; 
-        window.firebaseDeleteDoc = deleteDoc; 
+        // window.firebaseDoc = doc;  // Không cần Firestore
+        // window.firebaseGetDoc = getDoc; // Không cần Firestore
+        // window.firebaseUpdateDoc = updateDoc; // Không cần Firestore
+        // window.firebaseDeleteDoc = deleteDoc; // Không cần Firestore
 
 
-        // Firebase Authentication
+        // Firebase Authentication (vẫn giữ lại để có thể mở rộng tính năng khác sau này nếu cần)
         (async () => {
             try {
                 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -90,7 +87,7 @@
         })();
     </script>
     <style>
-        /* CSS (Không thay đổi) */
+        /* CSS (Không thay đổi nhiều, chỉ loại bỏ phần comment) */
         body {
             display: flex;
             flex-direction: column; 
@@ -101,70 +98,70 @@
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 20px;
-            padding-top: 70px; /* Adjusted for fixed top bar */
+            padding-top: 70px; 
             box-sizing: border-box;
-            color: #F5E9F2; /* Light text color for dark background */
+            color: #F5E9F2; 
         }
 
         .top-bar-controls {
-            position: fixed; /* Fixed position */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0,0,0,0.3); /* Semi-transparent black */
+            background-color: rgba(0,0,0,0.3); 
             backdrop-filter: blur(5px);
-            padding: 8px 15px; /* Reduced padding */
+            padding: 8px 15px; 
             display: flex;
-            justify-content: space-between; /* Space out items */
+            justify-content: space-between; 
             align-items: center;
-            z-index: 1005; /* Ensure it's above other content */
+            z-index: 1005; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             box-sizing: border-box;
-            transition: top 0.3s ease-in-out; /* Smooth hide/show */
+            transition: top 0.3s ease-in-out; 
         }
-        .top-bar-controls.hidden {
-            top: -80px; /* Move off-screen when hidden */
+        .top-bar-controls.hidden { /* Vẫn giữ lạiเผื่อ dùng cho tính năng khác */
+            top: -80px; 
         }
 
 
         .language-switcher {
-            background-color: transparent; /* Was: rgba(255,255,255,0.1) */
+            background-color: transparent; 
             padding: 0;
             border-radius: 0;
             display: flex;
-            flex-wrap: nowrap; /* Prevent wrapping */
-            gap: 6px; /* Spacing between buttons */
-            justify-content: flex-start; /* Align to the start */
+            flex-wrap: nowrap; 
+            gap: 6px; 
+            justify-content: flex-start; 
         }
         .language-switcher button {
             background: none;
-            border: 1px solid rgba(255, 51, 161, 0.4); /* Softer pink border */
-            color: #FFC0CB; /* Light Pink */
-            padding: 4px 8px; /* Smaller padding */
-            border-radius: 6px; /* Rounded corners */
+            border: 1px solid rgba(255, 51, 161, 0.4); 
+            color: #FFC0CB; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
             cursor: pointer;
-            font-size: 12px; /* Smaller font */
+            font-size: 12px; 
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px; /* Space between flag and text */
+            gap: 4px; 
         }
         .language-switcher button:hover, .language-switcher button.active {
-            background-color: #FF33A1; /* Hot Pink */
-            color: #1D111C; /* Dark background color for text */
-            transform: scale(1.03); /* Slight zoom on hover */
+            background-color: #FF33A1; 
+            color: #1D111C; 
+            transform: scale(1.03); 
             border-color: #FF33A1;
         }
         .language-switcher button .flag {
-            font-size: 14px; /* Slightly larger flag */
+            font-size: 14px; 
         }
         
-        .youtube-audio-controls button { /* Style for YouTube button */
-            background: rgba(255, 51, 161, 0.1); /* Very subtle pink */
+        .youtube-audio-controls button { 
+            background: rgba(255, 51, 161, 0.1); 
             border: 1px solid rgba(255, 51, 161, 0.4);
-            color: #FF8AD8; /* Lighter Pink */
-            padding: 5px 10px; /* Adjusted padding */
-            font-size: 13px; /* Adjusted font size */
+            color: #FF8AD8;
+            padding: 5px 10px; 
+            font-size: 13px; 
             border-radius: 20px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
@@ -172,47 +169,19 @@
         .youtube-audio-controls button:hover {
             background: #FF33A1;
             color: #1D111C;
-            box-shadow: 0 0 8px #FF33A1; /* Glow effect */
+            box-shadow: 0 0 8px #FF33A1; 
         }
 
-        .floating-comment-button { /* For opening comment page */
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(145deg, #FF33A1, #C71585); /* Pink gradient */
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 28px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            z-index: 999;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, bottom 0.3s ease;
-        }
-        .floating-comment-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(255,51,161,0.5);
-        }
-        .floating-comment-button.hidden {
-            opacity: 0;
-            bottom: -80px; /* Slide out when hidden */
-            pointer-events: none;
-        }
+        /* Nút bình luận nổi đã bị loại bỏ */
 
-
-        .page-section { /* Base style for all pages */
-            display: none; /* Hidden by default */
+        .page-section { 
+            display: none; 
             width: 100%;
             animation: fadeInPage 0.5s ease-out;
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            box-sizing: border-box; 
         }
         .page-section.active {
-            display: flex; /* Show active page */
+            display: flex; 
         }
         @keyframes fadeInPage {
             from { opacity: 0; }
@@ -226,8 +195,8 @@
             align-items: center;
             text-align: center;
             padding: 40px 25px;
-            margin-top: 0; /* Removed top margin as body padding handles it */
-            max-width: 700px; /* Max width for content */
+            margin-top: 0; 
+            max-width: 700px; 
             background-color: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(15px);
             border-radius: 30px;
@@ -237,7 +206,7 @@
 
         .landing-page-section h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(28px, 7vw, 42px); /* Responsive font size */
+            font-size: clamp(28px, 7vw, 42px); 
             font-weight: 700;
             color: #FF33A1;
             margin-bottom: 15px;
@@ -255,41 +224,41 @@
         .landing-page-section h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(22px, 5vw, 26px);
-            color: #FF8AD8; /* Lighter Pink */
+            color: #FF8AD8; 
             margin-top: 30px;
             margin-bottom: 15px;
             border-bottom: 1px solid rgba(255, 105, 180, 0.3);
             padding-bottom: 10px;
-            display: inline-block; /* Allows border bottom to fit content */
+            display: inline-block; 
         }
 
         .landing-page-section p, .landing-page-section ul {
             font-size: clamp(14px, 3.5vw, 16px);
             line-height: 1.8;
-            color: #E0C8DD; /* Light lavender for text */
+            color: #E0C8DD; 
             margin-bottom: 20px;
-            text-align: left; /* Align list items and paragraphs to the left */
+            text-align: left; 
         }
         
         .landing-page-section p.game-description {
-            text-align: center; /* Center the main game description */
+            text-align: center; 
             font-size: clamp(15px, 4vw, 17px);
             margin-bottom: 30px;
         }
 
         .landing-page-section ul {
-            list-style: none; /* Remove default bullet points */
+            list-style: none; 
             padding-left: 0;
         }
 
         .landing-page-section ul li {
-            padding-left: 30px; /* Space for custom bullet */
+            padding-left: 30px; 
             position: relative;
             margin-bottom: 10px;
         }
 
         .landing-page-section ul li::before {
-            content: '💋'; /* Custom bullet point */
+            content: '💋'; 
             position: absolute;
             left: 0;
             top: 0;
@@ -301,8 +270,8 @@
             background: linear-gradient(145deg, #FF33A1, #C71585);
             color: white;
             border: 1px solid #FF33A1;
-            padding: 15px 30px; /* Generous padding */
-            font-size: clamp(16px, 4.5vw, 20px); /* Responsive font size */
+            padding: 15px 30px; 
+            font-size: clamp(16px, 4.5vw, 20px); 
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             border-radius: 35px;
@@ -321,45 +290,45 @@
 
         /* --- GAME CONTAINER STYLES --- */
         .game-container {
-            flex-direction: column; /* Stack elements vertically */
-            align-items: center; /* Center content */
-            margin-top: 0; /* Removed top margin */
-            background-color: rgba(10, 0, 5, 0.4); /* Darker, more transparent background */
+            flex-direction: column; 
+            align-items: center; 
+            margin-top: 0; 
+            background-color: rgba(10, 0, 5, 0.4); 
             backdrop-filter: blur(12px);
-            padding: 25px; /* Slightly reduced padding */
+            padding: 25px; 
             border-radius: 30px;
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-            text-align: center; /* Center text elements */
+            text-align: center; 
             width: 100%;
             max-width: 500px;
             border: 1.5px solid rgba(255, 105, 180, 0.2);
         }
         
         .game-container header h1 {
-            font-family: 'Playfair Display', serif; /* Elegant font */
+            font-family: 'Playfair Display', serif; 
             font-size: clamp(26px, 6vw, 38px);
-            color: #FF33A1; /* Hot Pink */
+            color: #FF33A1; 
             margin-bottom: 10px;
             text-shadow: 0 0 12px #FF33A1, 0 0 25px #FF33A1, 0 0 5px #000;
         }
 
         .game-container .tagline {
             font-size: clamp(14px, 3.8vw, 16px);
-            color: #E6A4B4; /* Soft Pink */
-            margin-bottom: 30px; /* Space below tagline */
+            color: #E6A4B4; 
+            margin-bottom: 30px; 
             font-style: italic;
             letter-spacing: 0.5px;
         }
 
         .card-display-area {
             width: 100%;
-            height: auto; /* Auto height based on content */
-            min-height: 380px; /* Minimum height for the card or placeholder */
+            height: auto; 
+            min-height: 380px; 
             max-height: 480px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 30px; /* Space below card area */
+            margin-bottom: 30px; 
             perspective: 1500px;
         }
 
@@ -368,9 +337,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: clamp(260px, 80vw, 320px); /* Responsive width */
-            height: clamp(380px, 110vw, 460px); /* Responsive height */
-            border: 3px dashed #DA70D6; /* Orchid Pink */
+            width: clamp(260px, 80vw, 320px); 
+            height: clamp(380px, 110vw, 460px); 
+            border: 3px dashed #DA70D6; 
             border-radius: 25px;
             color: #C9ADC9;
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -391,13 +360,13 @@
         .card {
             width: clamp(260px, 80vw, 320px);
             height: clamp(380px, 110vw, 460px);
-            background: linear-gradient(155deg, #2A1628, #1C0F1B); /* Dark purple gradient */
+            background: linear-gradient(155deg, #2A1628, #1C0F1B); 
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 25px; /* Inner padding */
+            padding: 25px; 
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Space out category, icon, text */
+            justify-content: space-between; 
             text-align: center;
             box-sizing: border-box;
             color: #F8EFF4;
@@ -408,16 +377,14 @@
             position: relative;
         }
         
-        /* Special styling for "hot" cards */
         .card.special-effect-card { 
-            border-color: #FF007F; /* Bright pink for special cards */
+            border-color: #FF007F; 
             box-shadow: 0 0 20px #FF007F, 0 0 40px #FF007F, 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: dealInSpecial 0.5s cubic-bezier(0.215, 0.610, 0.355, 1), 
                        flipInCardSpecial 0.7s 0.5s ease-out forwards,
-                       specialCardPulseGlow 1.2s infinite alternate 1s; /* Added delay to pulse */
+                       specialCardPulseGlow 1.2s infinite alternate 1s;
         }
         
-        /* Basic card animations */
         @keyframes dealInBasic { 
             from { transform: translateY(120px) scale(0.7); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
@@ -427,7 +394,6 @@
             to { transform: rotateY(0deg); }
         }
 
-        /* Special card animations */
         @keyframes dealInSpecial {
             from { transform: translateY(120px) scale(0.7) rotateZ(-8deg); opacity: 0; }
             to { transform: translateY(0) scale(1) rotateZ(0deg); opacity: 1; }
@@ -448,26 +414,26 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #FF8AD8; /* Lighter Pink */
+            color: #FF8AD8; 
             opacity: 0.95;
-            margin-bottom: 10px; /* Space below category */
+            margin-bottom: 10px; 
         }
         .card.special-effect-card .card-category {
-             color: #FF007F; /* Brighter pink for special card category */
+             color: #FF007F; 
              text-shadow: 0 0 8px #FF007F;
         }
 
         .card-main-icon {
             font-size: clamp(45px, 12vw, 60px);
-            margin: 15px 0; /* Vertical margin for icon */
-            line-height: 1.2; /* Adjust if icon is too tall */
+            margin: 15px 0; 
+            line-height: 1.2; 
             flex-shrink: 0;
             text-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
             transition: transform 0.3s ease-in-out;
         }
         .card.special-effect-card .card-main-icon {
             animation: specialIconPulse 1.2s infinite alternate;
-            font-size: clamp(50px, 13vw, 65px); /* Slightly larger for special cards */
+            font-size: clamp(50px, 13vw, 65px); 
         }
 
         @keyframes specialIconPulse {
@@ -477,14 +443,14 @@
 
         .card-content {
             font-size: clamp(16px, 4.2vw, 18px);
-            line-height: 1.7; /* Improved readability */
-            flex-grow: 1; /* Allow content to take available space */
+            line-height: 1.7; 
+            flex-grow: 1; 
             display: flex;
-            align-items: center; /* Vertically center text if short */
-            justify-content: center; /* Horizontally center text */
+            align-items: center; 
+            justify-content: center; 
             overflow-y: auto;
-            padding: 0 5px; /* Small horizontal padding for scrollbar */
-            margin-top: 5px; /* Space above content */
+            padding: 0 5px; 
+            margin-top: 5px; 
         }
         .card-content::-webkit-scrollbar { width: 6px; }
         .card-content::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
@@ -492,36 +458,36 @@
 
         .controls {
             display: flex;
-            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+            flex-wrap: wrap; 
             justify-content: center;
             align-items: center;
-            gap: 8px; /* Space between buttons */
+            gap: 8px; 
         }
 
         .controls button {
-            background: linear-gradient(145deg, #B3005E, #7A0042); /* Darker pink gradient */
+            background: linear-gradient(145deg, #B3005E, #7A0042); 
             color: white;
             border: 1px solid #FF33A1;
-            padding: 14px 20px; /* Slightly larger padding */
-            font-size: clamp(14px, 3.8vw, 16px); /* Responsive font size */
+            padding: 14px 20px; 
+            font-size: clamp(14px, 3.8vw, 16px); 
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
-            border-radius: 30px; /* More rounded */
+            border-radius: 30px; 
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255,51,161,0.7) inset;
             text-transform: uppercase;
             letter-spacing: 1px;
-            flex-grow: 1; /* Allow buttons to grow */
-            min-width: 130px; /* Minimum width for buttons */
+            flex-grow: 1; 
+            min-width: 130px; 
         }
-         .controls button.pose-button { /* Specific style for pose button */
-            background: linear-gradient(145deg, #FF69B4, #C71585); /* Lighter, more vibrant pink */
+         .controls button.pose-button { 
+            background: linear-gradient(145deg, #FF69B4, #C71585); 
             color: white;
             border-color: #FF33A1;
             box-shadow: 0 6px 18px rgba(0,0,0,0.3), 0 0 12px rgba(255,105,180,0.7) inset;
         }
-        .controls button.pose-button:hover { /* Hover for pose button */
+        .controls button.pose-button:hover { 
             background: linear-gradient(145deg, #C71585, #FF69B4);
             box-shadow: 0 10px 25px rgba(0,0,0,0.4), 0 0 18px rgba(255,105,180,0.9) inset, 0 0 15px #FF69B4;
         }
@@ -539,7 +505,7 @@
         }
 
         #resetButton {
-            background: linear-gradient(145deg, #5A4FCF, #3D32AA); /* Purple gradient */
+            background: linear-gradient(145deg, #5A4FCF, #3D32AA); 
             border-color: #8A7FFF;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(138,127,255,0.7) inset;
         }
@@ -549,264 +515,16 @@
         }
 
         .cards-remaining {
-            margin-top: 25px; /* Space above card count */
-            font-size: 14px; /* Slightly smaller */
+            margin-top: 25px; 
+            font-size: 14px; 
             color: #E6A4B4;
         }
 
-        /* --- COMMENT FEED PAGE STYLES --- */
-        .comment-feed-page.active { /* Ensure it takes full screen when active */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            padding: 20px; /* Consistent padding */
-            margin-top: 0; /* Override body padding */
-            z-index: 1003; /* Below top bar but above game */
-            background-color: rgba(10, 0, 5, 0.95); /* Darker, less transparent */
-            backdrop-filter: blur(15px); /* Stronger blur */
-            display: flex; /* Already flex, ensure it's set */
-            flex-direction: column;
-            align-items: center;
-            box-sizing: border-box;
-        }
-
-        .comment-feed-page h2 {
-            font-family: 'Playfair Display', serif;
-            color: #FF69B4;
-            margin-top: 20px; /* Space from top of page */
-            margin-bottom: 15px; /* Space below title */
-            font-size: clamp(22px, 5vw, 28px);
-            text-shadow: 0 0 10px #FF69B4;
-        }
-        #commentFeedDisplayArea {
-            width: 100%;
-            max-width: 700px; /* Max width for readability */
-            flex-grow: 1; /* Take available vertical space */
-            overflow-y: auto;
-            padding: 15px; /* Inner padding */
-            background-color: rgba(0,0,0,0.25);
-            border-radius: 15px;
-            margin-bottom: 10px; /* Space before form */
-            border: 1px solid rgba(255,51,161,0.2);
-            max-height: calc(100vh - 250px); /* Limit height to prevent overflow, adjust as needed */
-        }
-        #commentFeedDisplayArea::-webkit-scrollbar { width: 8px; }
-        #commentFeedDisplayArea::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
-        #commentFeedDisplayArea::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        /* --- COMMENT FEED PAGE STYLES - ĐÃ BỊ LOẠI BỎ --- */
         
-        .comment-item { 
-            background-color: rgba(255,255,255,0.06); /* Slightly lighter for contrast */
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            color: #E0C8DD;
-            font-size: 15px;
-            text-align: left;
-            word-wrap: break-word;
-            border-left: 3px solid #FF33A1; /* Pink accent */
-        }
-        .comment-item strong { 
-            color: #FF8AD8;
-            margin-right: 8px;
-        }
-        .comment-item .admin-tick {
-            color: #FFD700; /* Gold for admin */
-            margin-left: 5px;
-            font-weight: bold;
-        }
-        .comment-item .timestamp {
-            display: block;
-            font-size: 11px;
-            color: #A78A96;
-            margin-top: 5px;
-            text-align: right;
-        }
-        .comment-reply-button {
-            background: none;
-            border: 1px solid #8A7FFF; /* Purple for reply */
-            color: #8A7FFF;
-            padding: 3px 8px;
-            font-size: 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 5px;
-            float: right; /* Align to the right */
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .comment-reply-button:hover {
-            background-color: #8A7FFF;
-            color: #1D111C;
-        }
-        .replies-container {
-            margin-left: 25px; /* Indent replies */
-            margin-top: 8px;
-            border-left: 2px solid rgba(255, 105, 180, 0.3);
-            padding-left: 10px;
-        }
-        .reply-form-container {
-            margin-left: 25px;
-            margin-top: 8px;
-            padding: 8px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 6px;
-        }
-        .reply-form-container textarea {
-            width: calc(100% - 16px); /* Full width minus padding */
-            padding: 8px;
-            font-size: 13px;
-            height: 40px;
-            border-radius: 6px;
-            background-color: rgba(255,255,255,0.05);
-            color: #F5E9F2;
-            border: 1px solid #5A4FCF;
-            margin-bottom: 5px;
-        }
-        .reply-form-container button {
-            padding: 5px 10px;
-            font-size: 13px;
-            background: linear-gradient(145deg, #5A4FCF, #3D32AA);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-
-        .comment-feed-page #commentFeedForm { 
-            width: 100%;
-            max-width: 600px; /* Max width for form */
-            margin: 0 auto 10px auto; /* Centered, space below */
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; /* Space between form elements */
-        }
-        .comment-feed-page #commentFeedForm label {
-             color: #FF8AD8;
-             font-weight: bold;
-             font-size: 13px; 
-             text-align: left;
-             display: block;
-             margin-bottom: 2px; /* Small space below label */
-        }
-        .comment-feed-page #commentFeedForm input[type="text"],
-        .comment-feed-page #commentFeedForm input[type="password"],
-        .comment-feed-page #commentFeedForm textarea {
-            width: 100%; /* Full width */
-            padding: 10px; /* Comfortable padding */
-            margin-bottom: 8px; /* Space below input */
-            border: 1px solid #5A4FCF; /* Purple border */
-            border-radius: 8px; /* Rounded corners */
-            background-color: rgba(255,255,255,0.05);
-            color: #F5E9F2;
-            font-size: 14px; /* Readable font size */
-            box-sizing: border-box; /* Include padding in width */
-        }
-         .comment-feed-page #commentFeedForm textarea {
-            height: 60px; /* Default height for textarea */
-            resize: vertical;
-            margin-bottom: 5px; /* Reduced margin for emoji picker */
-        }
-        .emoji-picker-container { /* Container for button and picker */
-            display: flex;
-            align-items: center;
-            gap: 8px; /* Space between button and picker (if side-by-side) */
-            margin-bottom: 8px; /* Space below picker area */
-        }
-        #toggleEmojiPickerButton {
-            background: none;
-            border: 1px solid #FF8AD8;
-            color: #FF8AD8;
-            padding: 6px 10px; /* Adjust padding */
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px; /* Emoji size */
-            transition: background-color 0.2s, color 0.2s;
-        }
-        #toggleEmojiPickerButton:hover {
-            background-color: #FF8AD8;
-            color: #1D111C;
-        }
-
-        .emoji-picker {
-            display: none; /* Hidden by default */
-            flex-wrap: wrap;
-            gap: 6px; /* Space between emojis */
-            justify-content: flex-start; /* Align emojis to the start */
-            padding: 6px; /* Padding around emojis */
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 6px;
-            margin-top: 3px; /* Space above picker if it's below button */
-        }
-        .emoji-picker.visible {
-            display: flex;
-        }
-        .emoji-picker span {
-            font-size: 20px; /* Emoji size */
-            cursor: pointer;
-            padding: 3px; /* Clickable area */
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-        .emoji-picker span:hover {
-            background-color: rgba(255,255,255,0.15);
-        }
-
-        .comment-feed-page #commentFeedForm button[type="submit"] { 
-            width: 100%; /* Full width */
-            padding: 12px 20px; /* Good padding */
-            margin-top: 5px; /* Space above button */
-            font-size: 16px; 
-            letter-spacing: 1px; 
-            background: linear-gradient(145deg, #FF33A1, #C71585);
-            color: white;
-            border: 1px solid #FF33A1;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,51,161,0.6) inset;
-            border-radius: 25px; /* Rounded button */
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-         }
-         .comment-feed-page #commentFeedForm button[type="submit"]:hover {
-            background: linear-gradient(145deg, #C71585, #FF33A1);
-            box-shadow: 0 7px 18px rgba(0,0,0,0.4), 0 0 12px rgba(255,51,161,0.8) inset;
-            transform: translateY(-1px);
-         }
-
-         #adminFeedPasswordContainer {
-            /* Styles for admin password field container if needed, currently shown/hidden by JS */
-         }
-
-
-        .comment-feed-page .back-to-game-button {
-            margin-top: 15px; /* Space above button */
-            padding: 10px 20px; /* Standard padding */
-            font-size: 16px; /* Standard font size */
-            background: linear-gradient(145deg, #7A0042, #B3005E); /* Darker pink, consistent with other back buttons */
-            color: white;
-            border: 1px solid #B3005E;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(179,0,94,0.6) inset;
-            align-self: center; /* Center button */
-            border-radius: 25px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-        .comment-feed-page .back-to-game-button:hover {
-            background: linear-gradient(145deg, #B3005E, #7A0042);
-            box-shadow: 0 7px 18px rgba(0,0,0,0.4), 0 0 12px rgba(179,0,94,0.8) inset;
-            transform: translateY(-1px);
-        }
-
-
         /* MODAL CHO TƯ THẾ */
-        .pose-modal { /* Modal background */
-            display: none; /* Hidden by default */
+        .pose-modal { 
+            display: none; 
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -814,13 +532,13 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7); /* Dark overlay */
+            background-color: rgba(0,0,0,0.7); 
             backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
         }
 
-        .pose-modal-content { /* Modal box */
+        .pose-modal-content { 
             background: linear-gradient(145deg, #3E253B, #2A1628);
             margin: auto;
             padding: 30px;
@@ -839,7 +557,7 @@
             to { transform: translateY(0); opacity: 1;}
         }
 
-        .pose-modal-close { /* Close button (X) */
+        .pose-modal-close { 
             color: #FF8AD8;
             position: absolute;
             top: 15px;
@@ -856,7 +574,7 @@
             cursor: pointer;
         }
 
-        .pose-modal h2 { /* Modal title */
+        .pose-modal h2 { 
             font-family: 'Playfair Display', serif;
             color: #FF69B4;
             margin-top: 0;
@@ -864,15 +582,15 @@
             font-size: 24px;
         }
 
-        .pose-modal p { /* Modal text content */
+        .pose-modal p { 
             font-size: 17px;
             line-height: 1.7;
             color: #F0E6F0;
-            min-height: 50px; /* Ensure space for text */
+            min-height: 50px; 
             margin-bottom: 25px;
-            text-align: left; /* Align pose details to the left */
+            text-align: left; 
         }
-         .pose-modal p strong { /* For pose name */
+         .pose-modal p strong { 
             color: #FF8AD8;
             display: block;
             margin-bottom: 8px;
@@ -899,14 +617,12 @@
         </div>
     </div>
     
-    <button class="floating-comment-button" id="openCommentPageButton" title="Bình luận">💬</button>
-
     <div class="landing-page-section page-section active" id="landingPageSection">
-        <h1 data-translate-key="landing_main_title">Bộ Bài Yêu Thương</h1>
+        <h1 data-translate-key="landing_main_title">Spicy Night Drink Card</h1>
         <p class="tagline-lp" data-translate-key="landing_tagline_lp">- Hardcore Edition - <br>Đánh Thức Giác Quan, Bùng Nổ Cảm Xúc</p>
 
         <p class="game-description" data-translate-key="landing_game_description">
-            <strong>Bộ Bài Yêu Thương - Hardcore Edition</strong> là một trò chơi thẻ bài 18+ được thiết kế đặc biệt cho các cặp đôi muốn khám phá những giới hạn mới của sự thân mật, đam mê và phiêu lưu tình ái. Với những thử thách táo bạo, câu hỏi khơi gợi và những gợi ý nóng bỏng, trò chơi này hứa hẹn mang đến những giây phút vừa hồi hộp, vừa vui vẻ, giúp hâm nóng tình yêu và tạo nên những kỷ niệm khó phai.
+            <strong>Spicy Night Drink Card - Hardcore Edition</strong> là một trò chơi thẻ bài 18+ được thiết kế đặc biệt cho các cặp đôi muốn khám phá những giới hạn mới của sự thân mật, đam mê và phiêu lưu tình ái. Với những thử thách táo bạo, câu hỏi khơi gợi và những gợi ý nóng bỏng, trò chơi này hứa hẹn mang đến những giây phút vừa hồi hộp, vừa vui vẻ, giúp hâm nóng tình yêu và tạo nên những kỷ niệm khó phai.
         </p>
 
         <h2 data-translate-key="landing_prepare_title">Cần Chuẩn Bị Gì?</h2>
@@ -939,7 +655,7 @@
 
     <div class="game-container page-section" id="gameContainer">
         <header>
-            <h1 data-translate-key="game_main_title">Bộ Bài Yêu Thương</h1>
+            <h1 data-translate-key="game_main_title">Spicy Night Drink Card</h1>
             <p class="tagline" data-translate-key="game_tagline">Đêm nay... không còn giới hạn</p>
         </header>
 
@@ -969,34 +685,8 @@
         <div class="pose-modal-content">
             <span class="pose-modal-close" id="closePoseModal">×</span>
             <h2 id="poseModalTitle" data-translate-key="pose_modal_title_text">🔥 Tư Thế Ngẫu Nhiên 21+ 🔥</h2>
-            <p id="poseModalText"></p> </div>
-    </div>
-
-    <div class="comment-feed-page page-section" id="commentFeedPage">
-        <h2 data-translate-key="comment_page_title">Bảng Vàng Cảm Xúc</h2>
-        <div id="commentFeedDisplayArea">
-            </div>
-        <form id="commentFeedForm">
-            <label for="commentFeedUser" data-translate-key="comment_user_label">Tên của bạn:</label>
-            <input type="text" id="commentFeedUser" name="commentFeedUser" placeholder="Ẩn danh nếu bỏ trống">
-            
-            <div id="adminFeedPasswordContainer" style="display:none;">
-                 <label for="adminFeedPassword" data-translate-key="admin_password_label">Mật khẩu Admin:</label>
-                 <input type="password" id="adminFeedPassword" name="adminFeedPassword">
-            </div>
-
-            <label for="commentFeedMessage" data-translate-key="comment_message_label">Chia sẻ của bạn:</label>
-            <textarea id="commentFeedMessage" name="commentFeedMessage" rows="3" required></textarea>
-            
-            <div class="emoji-picker-container">
-                 <button type="button" id="toggleEmojiPickerButton" title="Chọn Emoji">😃</button>
-            </div>
-            <div class="emoji-picker" id="emojiPicker">
-                </div>
-
-            <button type="submit" id="submitFeedCommentButton" data-translate-key="comment_submit_button">Đăng</button>
-            </form>
-        <button class="back-to-game-button" id="backToGameFromComments" data-translate-key="back_to_main_button">Quay Lại</button>
+            <p id="poseModalText"></p> 
+        </div>
     </div>
 
     <div id="youtube-player-container">
@@ -1007,19 +697,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             // State variables
             let isYoutubeAudioPlaying = false; 
-            let currentReplyingTo = null; // For comment replies
+            // let currentReplyingTo = null; // Không còn cần thiết
 
             // DOM Element references
             const landingPageSection = document.getElementById('landingPageSection');
             const gameContainer = document.getElementById('gameContainer');
-            const commentFeedPage = document.getElementById('commentFeedPage'); 
+            // const commentFeedPage = document.getElementById('commentFeedPage'); // Đã loại bỏ
             const topBarControls = document.getElementById('topBarControls'); 
 
             const startGameButton = document.getElementById('startGameButton');
             const languageSwitcher = document.getElementById('languageSwitcher');
             
-            const openCommentPageButton = document.getElementById('openCommentPageButton'); 
-            const backToGameFromCommentsButton = document.getElementById('backToGameFromComments');
+            // const openCommentPageButton = document.getElementById('openCommentPageButton'); // Đã loại bỏ
+            // const backToGameFromCommentsButton = document.getElementById('backToGameFromComments'); // Đã loại bỏ
 
             // Game elements
             const cardPlaceholder = document.getElementById('cardPlaceholder');
@@ -1038,29 +728,29 @@
             const poseModalText = document.getElementById('poseModalText'); 
             const predefinedPoseButton = document.getElementById('predefinedPoseButton'); 
 
-            // Comment feed elements
-            const commentForm = document.getElementById('commentFeedForm');
-            const commentUserInput = document.getElementById('commentFeedUser');
-            const adminFeedPasswordContainer = document.getElementById('adminFeedPasswordContainer');
-            const adminFeedPasswordInput = document.getElementById('adminFeedPassword');
-            const commentMessageInput = document.getElementById('commentFeedMessage');
-            const commentFeedDisplayArea = document.getElementById('commentFeedDisplayArea');
-            const emojiPicker = document.getElementById('emojiPicker');
-            const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton'); 
+            // Comment feed elements - Đã loại bỏ
+            // const commentForm = document.getElementById('commentFeedForm');
+            // const commentUserInput = document.getElementById('commentFeedUser');
+            // const adminFeedPasswordContainer = document.getElementById('adminFeedPasswordContainer');
+            // const adminFeedPasswordInput = document.getElementById('adminFeedPassword');
+            // const commentMessageInput = document.getElementById('commentFeedMessage');
+            // const commentFeedDisplayArea = document.getElementById('commentFeedDisplayArea');
+            // const emojiPicker = document.getElementById('emojiPicker');
+            // const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton'); 
             
             // YouTube audio elements
             const youtubeAudioToggleButton = document.getElementById('youtubeAudioToggle');
-            let ytPlayer; // YouTube player instance
-            const YOUTUBE_VIDEO_ID = 'KzBPjjxd8xg'; // Replace with your desired YouTube video ID for background music
+            let ytPlayer; 
+            const YOUTUBE_VIDEO_ID = 'KzBPjjxd8xg'; 
 
 
             // --- DỮ LIỆU DỊCH THUẬT (TRANSLATION DATA) ---
             const translations = {
                 'vi': {
                     'lang_name': 'Tiếng Việt',
-                    'landing_main_title': 'Bộ Bài Yêu Thương',
+                    'landing_main_title': 'Spicy Night Drink Card', // Đã đổi tên
                     'landing_tagline_lp': '- Hardcore Edition - <br>Đánh Thức Giác Quan, Bùng Nổ Cảm Xúc',
-                    'landing_game_description': '<strong>Bộ Bài Yêu Thương - Hardcore Edition</strong> là một trò chơi thẻ bài 18+ được thiết kế đặc biệt cho các cặp đôi muốn khám phá những giới hạn mới của sự thân mật, đam mê và phiêu lưu tình ái. Với những thử thách táo bạo, câu hỏi khơi gợi và những gợi ý nóng bỏng, trò chơi này hứa hẹn mang đến những giây phút vừa hồi hộp, vừa vui vẻ, giúp hâm nóng tình yêu và tạo nên những kỷ niệm khó phai.',
+                    'landing_game_description': '<strong>Spicy Night Drink Card - Hardcore Edition</strong> là một trò chơi thẻ bài 18+ được thiết kế đặc biệt cho các cặp đôi muốn khám phá những giới hạn mới của sự thân mật, đam mê và phiêu lưu tình ái. Với những thử thách táo bạo, câu hỏi khơi gợi và những gợi ý nóng bỏng, trò chơi này hứa hẹn mang đến những giây phút vừa hồi hộp, vừa vui vẻ, giúp hâm nóng tình yêu và tạo nên những kỷ niệm khó phai.', // Đã đổi tên
                     'landing_prepare_title': 'Cần Chuẩn Bị Gì?',
                     'landing_prepare_list_item1': 'Không gian riêng tư, ấm cúng và hoàn toàn thoải mái.',
                     'landing_prepare_list_item2': 'Đồ uống yêu thích của cả hai (rượu vang, cocktail, mocktail, hay bất cứ gì làm bạn thấy "phiêu").',
@@ -1078,7 +768,7 @@
                     'landing_when_play_list_item4': 'Trong những chuyến du lịch lãng mạn, tạo thêm điểm nhấn khó quên cho kỳ nghỉ.',
                     'landing_when_play_list_item5': 'Bất cứ khi nào cả hai cảm thấy sẵn sàng cho một cuộc phiêu lưu tình ái đầy bất ngờ!',
                     'landing_start_button': 'Bắt Đầu Cuộc Vui',
-                    'game_main_title': 'Bộ Bài Yêu Thương',
+                    'game_main_title': 'Spicy Night Drink Card', // Đã đổi tên
                     'game_tagline': 'Đêm nay... không còn giới hạn',
                     'card_placeholder_text': 'Dám thử thách giới hạn?',
                     'draw_card_button': 'Bốc Bài', 
@@ -1090,31 +780,21 @@
                     'play_youtube_audio_button': '▶️ Nghe Nhạc', 
                     'pause_youtube_audio_button': '⏸️ Tắt Nhạc', 
                     'pose_modal_title_text': '🔥 Tư Thế Ngẫu Nhiên 21+ 🔥',
-                    'comment_page_title': 'Bảng Vàng Cảm Xúc', 
-                    'comment_user_label': 'Tên của bạn (hiển thị):', 
-                    'comment_message_label': 'Chia sẻ của bạn:', 
-                    'comment_submit_button': 'Đăng', 
-                    'admin_password_label': 'Mật khẩu Admin:',
-                    'back_to_main_button': 'Quay Lại', 
-                    'reply_button_text': 'Trả lời',
-                    'submit_reply_button_text': 'Gửi Trả Lời',
-                    'cancel_reply_button_text': 'Hủy',
-                    'alert_comment_message_required': "Vui lòng nhập nội dung bình luận.",
                     'no_poses_defined': "Không có tư thế nào được định nghĩa.",
-                    'anonymous_user': 'Ẩn danh',
+                    'anonymous_user': 'Ẩn danh', // Giữ lạiเผื่อ dùng cho tính năng khác
                     // Card Categories
                     'Thử Thách': 'Thử Thách',
                     'Câu Hỏi': 'Câu Hỏi',
                     'Hành Động': 'Hành Động',
                     'Đặc Biệt': 'Đặc Biệt',
-                    'Tư Thế Nóng Bỏng': 'Tư Thế Nóng Bỏng', // Steamy Pose
-                    'Thử Thách Táo Bạo': 'Thử Thách Táo Bạo' // Daring Challenge
+                    'Tư Thế Nóng Bỏng': 'Tư Thế Nóng Bỏng', 
+                    'Thử Thách Táo Bạo': 'Thử Thách Táo Bạo' 
                 },
                 'en': {
                     'lang_name': 'English',
-                    'landing_main_title': 'Love Cards Deck',
+                    'landing_main_title': 'Spicy Night Drink Card', // Đã đổi tên
                     'landing_tagline_lp': '- Hardcore Edition - <br>Awaken Senses, Ignite Emotions',
-                    'landing_game_description': '<strong>Love Cards Deck - Hardcore Edition</strong> is an 18+ card game specially designed for couples who want to explore new limits of intimacy, passion, and amorous adventure. With daring challenges, evocative questions, and steamy suggestions, this game promises moments of thrill and fun, helping to spice up love and create unforgettable memories.',
+                    'landing_game_description': '<strong>Spicy Night Drink Card - Hardcore Edition</strong> is an 18+ card game specially designed for couples who want to explore new limits of intimacy, passion, and amorous adventure. With daring challenges, evocative questions, and steamy suggestions, this game promises moments of thrill and fun, helping to spice up love and create unforgettable memories.', // Đã đổi tên
                     'landing_prepare_title': 'What to Prepare?',
                      'landing_prepare_list_item1': 'A private, cozy, and completely comfortable space.', 
                      'landing_prepare_list_item2': 'Your favorite drinks (wine, cocktails, mocktails, or anything that gets you in the mood).',
@@ -1132,7 +812,7 @@
                     'landing_when_play_list_item4': 'During romantic getaways, adding an unforgettable highlight to your vacation.',
                     'landing_when_play_list_item5': 'Whenever you both feel ready for an amorous adventure full of surprises!',
                     'landing_start_button': 'Start the Fun',
-                    'game_main_title': 'Love Cards Deck',
+                    'game_main_title': 'Spicy Night Drink Card', // Đã đổi tên
                     'game_tagline': 'Tonight... there are no limits',
                     'card_placeholder_text': 'Dare to test the limits?',
                     'draw_card_button': 'Draw Card', 
@@ -1144,16 +824,6 @@
                     'play_youtube_audio_button': '▶️ Play Music', 
                     'pause_youtube_audio_button': '⏸️ Pause Music', 
                     'pose_modal_title_text': '🔥 Random 21+ Pose 🔥',
-                    'comment_page_title': 'Wall of Emotions & Comments', 
-                    'comment_user_label': 'Your Name (display):', 
-                    'comment_message_label': 'Your comment:', 
-                    'comment_submit_button': 'Post', 
-                    'admin_password_label': 'Admin Password:',
-                    'back_to_main_button': 'Back', 
-                    'reply_button_text': 'Reply',
-                    'submit_reply_button_text': 'Post Reply',
-                    'cancel_reply_button_text': 'Cancel',
-                    'alert_comment_message_required': "Please enter your comment.", 
                     'no_poses_defined': "No poses defined.",
                     'anonymous_user': 'Anonymous',
                     // Card Categories
@@ -1166,8 +836,7 @@
                 }
             };
 
-            // Dữ liệu lá bài (80 lá) - Đảm bảo đầy đủ cấu trúc cho vi và en
-            // Card data (80 cards) - Ensure complete structure for vi and en
+            // Dữ liệu lá bài (80 lá)
             const cardData = [
                 // Thử Thách (Challenge) - 15 cards
                 { id: 1, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Hôn đối phương ở 3 vị trí bất kỳ (không phải môi).", en: "Kiss your partner in any 3 places (not the lips)."}, icon: "💋" },
@@ -1207,7 +876,7 @@
                 { id: 33, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Cả hai cùng cởi 1 món đồ.", en: "Both remove one item of clothing."}, icon: "🔗" },
                 { id: 34, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Chọn 1 tư thế trong [tưởng tượng/sách]. Cả hai sẽ thử nó sau trò chơi.", en: "Choose a position [from imagination/book]. You'll try it after the game."}, icon: "🤸" },
                 { id: 35, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Hôn đối phương say đắm trong 1 phút.", en: "Passionately kiss your partner for 1 minute."}, icon: "💞" },
-                { id: 36, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Trao cho đối phương một nụ hôn kiểu Pháp thật chậm.", en: "Give your partner a slow French kiss."}, icon: "🇫🇷" },
+                { id: 36, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Trao cho đối phương một nụ hôn kiểu Pháp thật chậm.", en: "Give your partner a slow French kiss."}, icon: "�🇷" },
                 { id: 37, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Cắn nhẹ vào tai đối phương.", en: "Gently bite your partner's ear."}, icon: "👂" },
                 { id: 38, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Người rút bài chọn một bộ phận trên cơ thể đối phương để hôn.", en: "The card drawer chooses a body part on their partner to kiss."}, icon: "🎯" },
                 { id: 39, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Đối phương chọn một bộ phận trên cơ thể bạn để hôn.", en: "Your partner chooses a body part on you to kiss."}, icon: "📍" },
@@ -1406,20 +1075,20 @@
                 }
 
                 // Adjust UI elements based on the current page
-                const isCommentPage = pageId === 'commentFeedPage';
+                // const isCommentPage = pageId === 'commentFeedPage'; // Không còn trang bình luận
                 if (topBarControls) {
-                    topBarControls.classList.toggle('hidden', isCommentPage);
-                    document.body.style.paddingTop = isCommentPage ? '20px' : '70px'; // Adjust body padding
+                     topBarControls.classList.remove('hidden'); // Luôn hiển thị top bar
+                     document.body.style.paddingTop = '70px'; 
                 }
-                if (openCommentPageButton) {
-                    openCommentPageButton.classList.toggle('hidden', isCommentPage);
-                }
+                // if (openCommentPageButton) { // Đã loại bỏ
+                //     openCommentPageButton.classList.toggle('hidden', isCommentPage);
+                // }
 
             }
             
             if (startGameButton) {
                 startGameButton.addEventListener('click', () => {
-                    previousPage = 'game'; // Set for back navigation from comments
+                    // previousPage = 'game'; // Không còn cần thiết nếu không có trang bình luận
                     showPage('gameContainer');
                     initializeDeck(); // Prepare the card deck
                     if (Tone.context.state !== 'running') { // Start Tone.js audio context if not already running
@@ -1621,8 +1290,7 @@
             window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady; // Make it globally accessible for the API
 
             function onPlayerReady(event) {
-                // Player is ready (e.g., you could auto-play here if desired, or set volume)
-                // event.target.setVolume(50); // Example: Set volume to 50%
+                // Player is ready
             }
 
             function onPlayerStateChange(event) {
@@ -1637,23 +1305,22 @@
             }
 
             function toggleYoutubeAudio() {
-                if (Tone.context.state !== 'running') { // Ensure Tone.js context (for other sounds) is also running
+                if (Tone.context.state !== 'running') { 
                     Tone.start().catch(e => console.error("Tone.start error in toggleYoutubeAudio:", e));
                 }
                 if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
                     console.log("YouTube Player not ready yet.");
-                    // Attempt to load API if not already loaded (e.g. if initial load failed)
                     if (!window.YT || !window.YT.Player) { 
                         var tag = document.createElement('script');
-                        tag.src = "https://www.youtube.com/iframe_api"; // Correct API URL
+                        tag.src = "https://www.youtube.com/iframe_api"; 
                         var firstScriptTag = document.getElementsByTagName('script')[0];
                         if (firstScriptTag && firstScriptTag.parentNode) {
                              firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
                         } else {
-                            document.head.appendChild(tag); // Fallback if no script tags exist
+                            document.head.appendChild(tag); 
                         }
-                    } else if (!ytPlayer) { // If YT object exists but player not initialized
-                         onYouTubeIframeAPIReady(); // Try to initialize now
+                    } else if (!ytPlayer) { 
+                         onYouTubeIframeAPIReady(); 
                     }
                     return;
                 }
@@ -1669,7 +1336,6 @@
                 youtubeAudioToggleButton.addEventListener('click', toggleYoutubeAudio);
             }
             
-            // Load the YouTube IFrame Player API code asynchronously.
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -1682,12 +1348,11 @@
 
             // --- POSE MODAL LOGIC ---
             function displayRandomPredefinedPose() {
-                if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in displayRandomPredefinedPose:", e)); // Ensure audio context
+                if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in displayRandomPredefinedPose:", e)); 
                 if (predefinedPoses.length > 0) {
                     const randomIndex = Math.floor(Math.random() * predefinedPoses.length);
                     const pose = predefinedPoses[randomIndex];
                     
-                    // Get translated text for pose details
                     const poseName = (pose.name && pose.name[currentLanguage]) || (pose.name && pose.name['vi']) || "Pose Name";
                     const poseDescription = (pose.description && pose.description[currentLanguage]) || (pose.description && pose.description['vi']) || "Pose Description";
                     const poseReason = (pose.reason && pose.reason[currentLanguage]) || (pose.reason && pose.reason['vi']) || "Pose Reason";
@@ -1700,11 +1365,10 @@
                             <em>${poseReason}</em>
                         </p>
                     `;
-                    if(poseModal) poseModal.style.display = 'flex'; // Show the modal
-                    hotStuffSound(); // Play a sound for the pose reveal
+                    if(poseModal) poseModal.style.display = 'flex'; 
+                    hotStuffSound(); 
                 } else {
-                    // Handle case where no poses are defined
-                    if(poseModalTitle) poseModalTitle.textContent = (translations[currentLanguage] && translations[currentLanguage]['Thông Báo']) || "Notification"; // Generic title
+                    if(poseModalTitle) poseModalTitle.textContent = (translations[currentLanguage] && translations[currentLanguage]['Thông Báo']) || "Notification"; 
                     if(poseModalText) poseModalText.innerHTML = `<p>${(translations[currentLanguage] && translations[currentLanguage]['no_poses_defined']) || "Không có tư thế nào được định nghĩa."}</p>`;
                     if(poseModal) poseModal.style.display = 'flex';
                 }
@@ -1713,327 +1377,12 @@
             if(predefinedPoseButton) predefinedPoseButton.addEventListener('click', displayRandomPredefinedPose); 
 
             if(closePoseModalButton) closePoseModalButton.addEventListener('click', () => { 
-                if(poseModal) poseModal.style.display = 'none'; // Hide modal
+                if(poseModal) poseModal.style.display = 'none'; 
             });
             
-            // --- COMMENT FEED PAGE LOGIC ---
-            const adminUsername = "dev team"; // Define admin username
-            const adminPasswordValue = "22042412"; // Define admin password
-            const emojis = ['💖', '🔥', '💋', '😈', '😂', '👍', '🤔', '🎉', '🥂', '💦', '🍆', '🍑']; // Available emojis
-
-            function populateEmojiPicker() {
-                if (!emojiPicker) return;
-                emojiPicker.innerHTML = ''; // Clear existing emojis
-                emojis.forEach(emoji => {
-                    const emojiSpan = document.createElement('span');
-                    emojiSpan.textContent = emoji;
-                    emojiSpan.addEventListener('click', () => {
-                        if(commentMessageInput) { // Insert emoji into comment textarea
-                            const cursorPos = commentMessageInput.selectionStart;
-                            const textBefore = commentMessageInput.value.substring(0, cursorPos);
-                            const textAfter = commentMessageInput.value.substring(cursorPos);
-                            commentMessageInput.value = textBefore + emoji + textAfter;
-                            commentMessageInput.focus();
-                            commentMessageInput.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
-                        }
-                    });
-                    emojiPicker.appendChild(emojiSpan);
-                });
-            }
-
-            if(toggleEmojiPickerButton && emojiPicker){
-                toggleEmojiPickerButton.addEventListener('click', () => {
-                    emojiPicker.classList.toggle('visible'); // Show/hide emoji picker
-                });
-            }
-
-
-            if(openCommentPageButton) { 
-                openCommentPageButton.addEventListener('click', () => {
-                    // Determine which page was active before opening comments
-                    if (landingPageSection && landingPageSection.classList.contains('active')) {
-                        previousPage = 'landing';
-                    } else if (gameContainer && gameContainer.classList.contains('active')) {
-                        previousPage = 'game';
-                    }
-                    showPage('commentFeedPage');
-                    loadComments(); // Load comments when page is shown
-                    if (emojiPicker && !emojiPicker.innerHTML) { // Populate emoji picker if not already done
-                        populateEmojiPicker();
-                    }
-                });
-            }
-            if(backToGameFromCommentsButton) {
-                backToGameFromCommentsButton.addEventListener('click', () => {
-                    showPage(previousPage === 'game' ? 'gameContainer' : 'landingPageSection'); // Go back to previous page
-                });
-            }
+            // --- COMMENT FEED PAGE LOGIC - ĐÃ BỊ LOẠI BỎ ---
             
-            // Show admin password field if admin username is typed
-            if(commentUserInput) {
-                commentUserInput.addEventListener('input', () => {
-                    if (commentUserInput.value.toLowerCase() === adminUsername) {
-                        if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'block';
-                    } else {
-                        if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none';
-                        if(adminFeedPasswordInput) adminFeedPasswordInput.value = ''; // Clear password if username changes
-                    }
-                });
-            }
-
-            // Load comments from Firestore
-            async function loadComments() { 
-                if (!commentFeedDisplayArea || !window.firebaseDB || !window.firebaseAppId) {
-                    console.warn("Firestore DB or App ID not available for loading comments.");
-                    return;
-                }
-                
-                const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
-                const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
-                // Query comments, order by timestamp (oldest first for tree building)
-                const q = window.firebaseQuery(commentsCol, window.firebaseOrderBy("timestamp", "asc")); 
-
-                window.firebaseOnSnapshot(q, (querySnapshot) => {
-                    if(!commentFeedDisplayArea) return;
-                    commentFeedDisplayArea.innerHTML = ''; // Clear previous comments
-                    const allComments = [];
-                    querySnapshot.forEach((doc) => {
-                        allComments.push({ id: doc.id, ...doc.data() });
-                    });
-
-                    // Build a tree structure for comments and replies
-                    const commentTree = {};
-                    const topLevelComments = [];
-
-                    allComments.forEach(comment => {
-                        comment.replies = []; // Initialize replies array
-                        commentTree[comment.id] = comment;
-                        if (comment.parentId) { // If it's a reply
-                            if (commentTree[comment.parentId]) {
-                                commentTree[comment.parentId].replies.push(comment);
-                            } else {
-                                topLevelComments.push(comment); // Orphaned reply, treat as top-level
-                            }
-                        } else { // If it's a top-level comment
-                            topLevelComments.push(comment);
-                        }
-                    });
-                    
-                    // Sort top-level comments by timestamp (already sorted by query, but good for safety)
-                    topLevelComments.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-
-
-                    topLevelComments.forEach(comment => {
-                        displayCommentWithReplies(comment, commentFeedDisplayArea, 0); // Display each comment tree
-                    });
-
-                    if(commentFeedDisplayArea) commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight; // Scroll to bottom
-                }, (error) => {
-                    console.error("Error loading comments: ", error);
-                    if(commentFeedDisplayArea) commentFeedDisplayArea.innerHTML = "<li>Lỗi tải bình luận. Vui lòng thử lại sau.</li>";
-                });
-            }
-            
-            // Recursively display comments and their replies
-            function displayCommentWithReplies(comment, container, depth) {
-                const commentElement = createCommentElement(comment, depth);
-                container.appendChild(commentElement);
-
-                if (comment.replies && comment.replies.length > 0) {
-                    const repliesContainer = document.createElement('div');
-                    repliesContainer.classList.add('replies-container');
-                    if (depth > 0) { // Adjust margin for deeper replies - simple indentation
-                        repliesContainer.style.marginLeft = `${depth * 15 + 25}px`;
-                    }
-                    commentElement.appendChild(repliesContainer);
-                    // Sort replies by timestamp before displaying
-                    comment.replies.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
-                    comment.replies.forEach(reply => {
-                        displayCommentWithReplies(reply, repliesContainer, depth + 1);
-                    });
-                }
-            }
-
-
-            // Create HTML element for a single comment
-            function createCommentElement(commentData, depth) {
-                const commentItem = document.createElement('div');
-                commentItem.classList.add('comment-item');
-                commentItem.dataset.commentId = commentData.id; // Store comment ID for replies
-                if (depth > 0) {
-                    // Basic indentation for replies, can be improved with CSS
-                    commentItem.style.marginLeft = `${depth * 10}px`; 
-                }
-                
-                let userNameDisplay = commentData.user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh");
-                let adminTickHTML = '';
-                if (commentData.isAdmin) {
-                    adminTickHTML = '<span class="admin-tick">⭐</span>'; // Admin indicator
-                }
-
-                // Sanitize message content (basic HTML entity encoding)
-                const sanitizedMessage = (commentData.message || "").replace(/</g, "<").replace(/>/g, ">");
-                let commentTimestamp = "Đang tải...";
-                if (commentData.timestamp && typeof commentData.timestamp.toDate === 'function') {
-                    commentTimestamp = commentData.timestamp.toDate().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
-                } else if (commentData.timestamp) { // Fallback if timestamp is not a Firestore Timestamp object
-                     commentTimestamp = new Date(commentData.timestamp).toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
-                }
-
-
-                commentItem.innerHTML = `
-                    <div>
-                        <strong>${userNameDisplay}${adminTickHTML}:</strong> 
-                        ${sanitizedMessage.replace(/\n/g, '<br>')}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-                        <span class="timestamp">${commentTimestamp}</span>
-                        <button class="comment-reply-button" data-translate-key="reply_button_text">${translations[currentLanguage]?.reply_button_text || 'Trả lời'}</button>
-                    </div>
-                `;
-
-                const replyButton = commentItem.querySelector('.comment-reply-button');
-                if (replyButton) {
-                    replyButton.addEventListener('click', () => showReplyForm(commentData.id, commentItem));
-                }
-                return commentItem;
-            }
-
-            // Show form for replying to a comment
-            function showReplyForm(parentId, parentCommentElement) {
-                // Remove any existing reply form to prevent duplicates
-                const existingReplyForm = parentCommentElement.querySelector('.reply-form-container');
-                if (existingReplyForm) {
-                    existingReplyForm.remove();
-                    currentReplyingTo = null; // Reset replying state
-                    return; // Toggle off if clicked again
-                }
-                // Remove other open reply forms
-                document.querySelectorAll('.reply-form-container').forEach(form => form.remove());
-
-
-                currentReplyingTo = parentId; // Set the ID of the comment being replied to
-
-                const replyFormContainer = document.createElement('div');
-                replyFormContainer.classList.add('reply-form-container');
-
-                const replyTextarea = document.createElement('textarea');
-                replyTextarea.rows = 2;
-                replyTextarea.placeholder = "Viết trả lời...";
-
-                const submitReplyButton = document.createElement('button');
-                submitReplyButton.textContent = translations[currentLanguage]?.submit_reply_button_text || 'Gửi Trả Lời';
-                submitReplyButton.type = 'button'; // Important to prevent form submission if nested
-
-                const cancelReplyButton = document.createElement('button');
-                cancelReplyButton.textContent = translations[currentLanguage]?.cancel_reply_button_text || 'Hủy';
-                cancelReplyButton.type = 'button';
-                cancelReplyButton.style.marginLeft = '5px';
-                cancelReplyButton.style.background = 'grey'; // Simple cancel button style
-
-
-                submitReplyButton.onclick = async () => {
-                    const replyMessage = replyTextarea.value.trim();
-                    if (replyMessage) {
-                        const user = commentUserInput.value.trim(); // Get current user from main input (or handle anonymous)
-                        const password = adminFeedPasswordInput.value;
-                        let isAdminReply = false;
-                        if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
-                            isAdminReply = true;
-                        }
-                        await saveComment(user, replyMessage, isAdminReply, currentReplyingTo); // Save as a reply
-                        replyFormContainer.remove(); // Clean up form
-                        currentReplyingTo = null; // Reset state
-                    }
-                };
-                
-                cancelReplyButton.onclick = () => {
-                    replyFormContainer.remove();
-                    currentReplyingTo = null; // Reset state
-                };
-
-                replyFormContainer.appendChild(replyTextarea);
-                replyFormContainer.appendChild(submitReplyButton);
-                replyFormContainer.appendChild(cancelReplyButton);
-                parentCommentElement.appendChild(replyFormContainer);
-                replyTextarea.focus();
-            }
-
-
-            // Save comment to Firestore
-            async function saveComment(user, message, isAdmin, parentId = null) { 
-                if (!window.firebaseDB || !window.firebaseAuth || !window.firebaseAuth.currentUser || !window.firebaseAppId) {
-                    console.error("Firebase not initialized or user not authenticated for saving comment.");
-                    // Use a custom modal or a less intrusive notification instead of alert
-                    // For now, keeping alert for simplicity as per original structure
-                    alert("Không thể gửi bình luận. Vui lòng thử lại sau.");
-                    return null; 
-                }
-                const userIdAuth = window.firebaseAuth.currentUser.uid; // Get authenticated user's ID
-
-                try {
-                    const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
-                    const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
-                    const commentData = {
-                        userId: userIdAuth, // Store Firebase Auth UID
-                        user: user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh"),
-                        message: message,
-                        isAdmin: isAdmin,
-                        timestamp: window.firebaseServerTimestamp() // Use server timestamp for consistency
-                    };
-                    if (parentId) {
-                        commentData.parentId = parentId; // Link reply to parent comment
-                    }
-                    await window.firebaseAddDoc(commentsCol, commentData);
-                    // No need to manually reload comments here, onSnapshot will handle it
-                } catch (error) {
-                    console.error("Error adding comment: ", error);
-                    alert("Lỗi khi gửi bình luận. Vui lòng thử lại.");
-                }
-            }
-
-
-            if(commentForm) { 
-                 commentForm.addEventListener('submit', async (event) => { 
-                    event.preventDefault();
-                    const user = commentUserInput ? commentUserInput.value.trim() : ""; 
-                    const message = commentMessageInput ? commentMessageInput.value.trim() : ""; 
-                    const password = adminFeedPasswordInput ? adminFeedPasswordInput.value : ""; 
-
-                    const currentTrans = translations[currentLanguage] || translations['vi'];
-
-                    if (!message) { // Basic validation for message content
-                        const messageLabel = document.querySelector('label[for="commentFeedMessage"]');
-                        if (messageLabel) { // Show error near the input field
-                            messageLabel.textContent = currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận.";
-                            messageLabel.style.color = "#FF33A1"; // Highlight error
-                            setTimeout(() => { // Reset after a few seconds
-                                messageLabel.textContent = currentTrans['comment_message_label'] || "Chia sẻ của bạn:";
-                                messageLabel.style.color = "#FF8AD8";
-                            }, 3000);
-                        } else { // Fallback to alert if label not found
-                            alert(currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận của bạn.");
-                        }
-                        return;
-                    }
-
-
-                    let isAdmin = false;
-                    if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
-                        isAdmin = true;
-                    }
-                    
-                    await saveComment(user, message, isAdmin, null); // Save as top-level comment (parentId is null)
-                    
-                    if(commentForm) commentForm.reset(); // Reset form fields
-                    if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none'; // Hide admin password field
-                    if(emojiPicker) emojiPicker.classList.remove('visible'); // Hide emoji picker
-                });
-            }
-            // --------------------------------------
-
             // --- GLOBAL EVENT LISTENERS ---
-            // Close pose modal if clicked outside of it
             window.addEventListener('click', (event) => {
                 if (event.target == poseModal) { 
                     if(poseModal) poseModal.style.display = 'none'; 
@@ -2044,9 +1393,9 @@
             if(drawButton) drawButton.addEventListener('click', drawCard);
             if(resetButton) resetButton.addEventListener('click', initializeDeck);
             
-            initializeLanguage(); // Set up language and translations
-            showPage('landingPageSection'); // Show landing page initially
+            initializeLanguage(); 
+            showPage('landingPageSection'); 
         });
     </script>
 </body>
-</html>
+</ht�
