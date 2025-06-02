@@ -23,8 +23,9 @@
                 console.log("Using Firebase config from Canvas environment.");
             } catch (e) {
                 console.error("Error parsing Firebase config from environment:", e);
+                // Fallback to user-provided or default config if parsing fails or env var is missing
                 firebaseConfig = { 
-                    apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg",
+                    apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", // Replace with your actual Firebase config
                     authDomain: "drink-card-cb29c.firebaseapp.com",
                     projectId: "drink-card-cb29c",
                     storageBucket: "drink-card-cb29c.firebasestorage.app",
@@ -35,8 +36,9 @@
                 console.warn("Using user-provided Firebase config as fallback or due to parsing error.");
             }
         } else {
-            firebaseConfig = { 
-                apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg",
+            // Fallback to user-provided or default config if env var is missing
+             firebaseConfig = { 
+                apiKey: "AIzaSyDqDWgCB6oG4-3LIgzGAsJ8PGpgcCUXepg", // Replace with your actual Firebase config
                 authDomain: "drink-card-cb29c.firebaseapp.com",
                 projectId: "drink-card-cb29c",
                 storageBucket: "drink-card-cb29c.firebasestorage.app",
@@ -50,11 +52,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        // setLogLevel('debug'); 
+        // setLogLevel('debug'); // Uncomment for Firestore debugging
 
+        // Make Firebase services globally available (consider a more encapsulated approach for larger apps)
         window.firebaseDB = db;
         window.firebaseAuth = auth;
-        window.firebaseAppId = appIdFromEnv; 
+        window.firebaseAppId = appIdFromEnv; // Use the app ID from environment or default
         window.firebaseServerTimestamp = serverTimestamp;
         window.firebaseCollection = collection;
         window.firebaseAddDoc = addDoc;
@@ -70,10 +73,12 @@
         window.firebaseDeleteDoc = deleteDoc; 
 
 
+        // Firebase Authentication
         (async () => {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
                     console.log("Firebase: Signed in with custom token.");
                 } else {
                     await signInAnonymously(auth);
@@ -96,70 +101,70 @@
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 20px;
-            padding-top: 70px; 
+            padding-top: 70px; /* Adjusted for fixed top bar */
             box-sizing: border-box;
-            color: #F5E9F2; 
+            color: #F5E9F2; /* Light text color for dark background */
         }
 
         .top-bar-controls {
-            position: fixed;
+            position: fixed; /* Fixed position */
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(0,0,0,0.3); 
+            background-color: rgba(0,0,0,0.3); /* Semi-transparent black */
             backdrop-filter: blur(5px);
-            padding: 8px 15px; 
+            padding: 8px 15px; /* Reduced padding */
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between; /* Space out items */
             align-items: center;
-            z-index: 1005; 
+            z-index: 1005; /* Ensure it's above other content */
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             box-sizing: border-box;
-            transition: top 0.3s ease-in-out; 
+            transition: top 0.3s ease-in-out; /* Smooth hide/show */
         }
         .top-bar-controls.hidden {
-            top: -80px; 
+            top: -80px; /* Move off-screen when hidden */
         }
 
 
         .language-switcher {
-            background-color: transparent; 
+            background-color: transparent; /* Was: rgba(255,255,255,0.1) */
             padding: 0;
             border-radius: 0;
             display: flex;
-            flex-wrap: nowrap; 
-            gap: 6px; 
-            justify-content: flex-start; 
+            flex-wrap: nowrap; /* Prevent wrapping */
+            gap: 6px; /* Spacing between buttons */
+            justify-content: flex-start; /* Align to the start */
         }
         .language-switcher button {
             background: none;
-            border: 1px solid rgba(255, 51, 161, 0.4); 
-            color: #FFC0CB; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
+            border: 1px solid rgba(255, 51, 161, 0.4); /* Softer pink border */
+            color: #FFC0CB; /* Light Pink */
+            padding: 4px 8px; /* Smaller padding */
+            border-radius: 6px; /* Rounded corners */
             cursor: pointer;
-            font-size: 12px; 
+            font-size: 12px; /* Smaller font */
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px; 
+            gap: 4px; /* Space between flag and text */
         }
         .language-switcher button:hover, .language-switcher button.active {
-            background-color: #FF33A1;
-            color: #1D111C;
-            transform: scale(1.03); 
+            background-color: #FF33A1; /* Hot Pink */
+            color: #1D111C; /* Dark background color for text */
+            transform: scale(1.03); /* Slight zoom on hover */
             border-color: #FF33A1;
         }
         .language-switcher button .flag {
-            font-size: 14px; 
+            font-size: 14px; /* Slightly larger flag */
         }
         
-        .youtube-audio-controls button { 
-            background: rgba(255, 51, 161, 0.1); 
+        .youtube-audio-controls button { /* Style for YouTube button */
+            background: rgba(255, 51, 161, 0.1); /* Very subtle pink */
             border: 1px solid rgba(255, 51, 161, 0.4);
-            color: #FF8AD8;
-            padding: 5px 10px; 
-            font-size: 13px; 
+            color: #FF8AD8; /* Lighter Pink */
+            padding: 5px 10px; /* Adjusted padding */
+            font-size: 13px; /* Adjusted font size */
             border-radius: 20px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
@@ -167,14 +172,14 @@
         .youtube-audio-controls button:hover {
             background: #FF33A1;
             color: #1D111C;
-            box-shadow: 0 0 8px #FF33A1; 
+            box-shadow: 0 0 8px #FF33A1; /* Glow effect */
         }
 
-        .floating-comment-button { 
+        .floating-comment-button { /* For opening comment page */
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(145deg, #FF33A1, #C71585); 
+            background: linear-gradient(145deg, #FF33A1, #C71585); /* Pink gradient */
             color: white;
             border: none;
             width: 60px;
@@ -195,19 +200,19 @@
         }
         .floating-comment-button.hidden {
             opacity: 0;
-            bottom: -80px; 
+            bottom: -80px; /* Slide out when hidden */
             pointer-events: none;
         }
 
 
-        .page-section { 
-            display: none; 
+        .page-section { /* Base style for all pages */
+            display: none; /* Hidden by default */
             width: 100%;
             animation: fadeInPage 0.5s ease-out;
-            box-sizing: border-box; 
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
         .page-section.active {
-            display: flex; 
+            display: flex; /* Show active page */
         }
         @keyframes fadeInPage {
             from { opacity: 0; }
@@ -221,8 +226,8 @@
             align-items: center;
             text-align: center;
             padding: 40px 25px;
-            margin-top: 0; 
-            max-width: 700px; 
+            margin-top: 0; /* Removed top margin as body padding handles it */
+            max-width: 700px; /* Max width for content */
             background-color: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(15px);
             border-radius: 30px;
@@ -232,7 +237,7 @@
 
         .landing-page-section h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(28px, 7vw, 42px); 
+            font-size: clamp(28px, 7vw, 42px); /* Responsive font size */
             font-weight: 700;
             color: #FF33A1;
             margin-bottom: 15px;
@@ -250,41 +255,41 @@
         .landing-page-section h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(22px, 5vw, 26px);
-            color: #FF8AD8; 
+            color: #FF8AD8; /* Lighter Pink */
             margin-top: 30px;
             margin-bottom: 15px;
             border-bottom: 1px solid rgba(255, 105, 180, 0.3);
             padding-bottom: 10px;
-            display: inline-block; 
+            display: inline-block; /* Allows border bottom to fit content */
         }
 
         .landing-page-section p, .landing-page-section ul {
             font-size: clamp(14px, 3.5vw, 16px);
             line-height: 1.8;
-            color: #E0C8DD; 
+            color: #E0C8DD; /* Light lavender for text */
             margin-bottom: 20px;
-            text-align: left; 
+            text-align: left; /* Align list items and paragraphs to the left */
         }
         
         .landing-page-section p.game-description {
-            text-align: center; 
+            text-align: center; /* Center the main game description */
             font-size: clamp(15px, 4vw, 17px);
             margin-bottom: 30px;
         }
 
         .landing-page-section ul {
-            list-style: none; 
+            list-style: none; /* Remove default bullet points */
             padding-left: 0;
         }
 
         .landing-page-section ul li {
-            padding-left: 30px; 
+            padding-left: 30px; /* Space for custom bullet */
             position: relative;
             margin-bottom: 10px;
         }
 
         .landing-page-section ul li::before {
-            content: '💋'; 
+            content: '💋'; /* Custom bullet point */
             position: absolute;
             left: 0;
             top: 0;
@@ -296,8 +301,8 @@
             background: linear-gradient(145deg, #FF33A1, #C71585);
             color: white;
             border: 1px solid #FF33A1;
-            padding: 15px 30px; 
-            font-size: clamp(16px, 4.5vw, 20px); 
+            padding: 15px 30px; /* Generous padding */
+            font-size: clamp(16px, 4.5vw, 20px); /* Responsive font size */
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             border-radius: 35px;
@@ -314,46 +319,47 @@
             transform: translateY(-3px) scale(1.05);
         }
 
+        /* --- GAME CONTAINER STYLES --- */
         .game-container {
-            flex-direction: column; 
-            align-items: center; 
-            margin-top: 0; 
-            background-color: rgba(10, 0, 5, 0.4); 
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center content */
+            margin-top: 0; /* Removed top margin */
+            background-color: rgba(10, 0, 5, 0.4); /* Darker, more transparent background */
             backdrop-filter: blur(12px);
-            padding: 25px; 
+            padding: 25px; /* Slightly reduced padding */
             border-radius: 30px;
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
-            text-align: center; 
+            text-align: center; /* Center text elements */
             width: 100%;
             max-width: 500px;
             border: 1.5px solid rgba(255, 105, 180, 0.2);
         }
         
         .game-container header h1 {
-            font-family: 'Playfair Display', serif; 
+            font-family: 'Playfair Display', serif; /* Elegant font */
             font-size: clamp(26px, 6vw, 38px);
-            color: #FF33A1; 
+            color: #FF33A1; /* Hot Pink */
             margin-bottom: 10px;
             text-shadow: 0 0 12px #FF33A1, 0 0 25px #FF33A1, 0 0 5px #000;
         }
 
         .game-container .tagline {
             font-size: clamp(14px, 3.8vw, 16px);
-            color: #E6A4B4; 
-            margin-bottom: 30px; 
+            color: #E6A4B4; /* Soft Pink */
+            margin-bottom: 30px; /* Space below tagline */
             font-style: italic;
             letter-spacing: 0.5px;
         }
 
         .card-display-area {
             width: 100%;
-            height: auto; 
-            min-height: 380px; 
+            height: auto; /* Auto height based on content */
+            min-height: 380px; /* Minimum height for the card or placeholder */
             max-height: 480px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 30px; 
+            margin-bottom: 30px; /* Space below card area */
             perspective: 1500px;
         }
 
@@ -362,9 +368,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: clamp(260px, 80vw, 320px); 
-            height: clamp(380px, 110vw, 460px); 
-            border: 3px dashed #DA70D6; 
+            width: clamp(260px, 80vw, 320px); /* Responsive width */
+            height: clamp(380px, 110vw, 460px); /* Responsive height */
+            border: 3px dashed #DA70D6; /* Orchid Pink */
             border-radius: 25px;
             color: #C9ADC9;
             transition: opacity 0.4s ease, transform 0.4s ease;
@@ -385,13 +391,13 @@
         .card {
             width: clamp(260px, 80vw, 320px);
             height: clamp(380px, 110vw, 460px);
-            background: linear-gradient(155deg, #2A1628, #1C0F1B); 
+            background: linear-gradient(155deg, #2A1628, #1C0F1B); /* Dark purple gradient */
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 25px; 
+            padding: 25px; /* Inner padding */
             display: flex;
             flex-direction: column;
-            justify-content: space-between; 
+            justify-content: space-between; /* Space out category, icon, text */
             text-align: center;
             box-sizing: border-box;
             color: #F8EFF4;
@@ -402,14 +408,16 @@
             position: relative;
         }
         
+        /* Special styling for "hot" cards */
         .card.special-effect-card { 
-            border-color: #FF007F; 
+            border-color: #FF007F; /* Bright pink for special cards */
             box-shadow: 0 0 20px #FF007F, 0 0 40px #FF007F, 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: dealInSpecial 0.5s cubic-bezier(0.215, 0.610, 0.355, 1), 
                        flipInCardSpecial 0.7s 0.5s ease-out forwards,
-                       specialCardPulseGlow 1.2s infinite alternate 1s;
+                       specialCardPulseGlow 1.2s infinite alternate 1s; /* Added delay to pulse */
         }
         
+        /* Basic card animations */
         @keyframes dealInBasic { 
             from { transform: translateY(120px) scale(0.7); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
@@ -419,6 +427,7 @@
             to { transform: rotateY(0deg); }
         }
 
+        /* Special card animations */
         @keyframes dealInSpecial {
             from { transform: translateY(120px) scale(0.7) rotateZ(-8deg); opacity: 0; }
             to { transform: translateY(0) scale(1) rotateZ(0deg); opacity: 1; }
@@ -439,26 +448,26 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #FF8AD8; 
+            color: #FF8AD8; /* Lighter Pink */
             opacity: 0.95;
-            margin-bottom: 10px; 
+            margin-bottom: 10px; /* Space below category */
         }
         .card.special-effect-card .card-category {
-             color: #FF007F; 
+             color: #FF007F; /* Brighter pink for special card category */
              text-shadow: 0 0 8px #FF007F;
         }
 
         .card-main-icon {
             font-size: clamp(45px, 12vw, 60px);
-            margin: 15px 0; 
-            line-height: 1.2; 
+            margin: 15px 0; /* Vertical margin for icon */
+            line-height: 1.2; /* Adjust if icon is too tall */
             flex-shrink: 0;
             text-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
             transition: transform 0.3s ease-in-out;
         }
         .card.special-effect-card .card-main-icon {
             animation: specialIconPulse 1.2s infinite alternate;
-            font-size: clamp(50px, 13vw, 65px); 
+            font-size: clamp(50px, 13vw, 65px); /* Slightly larger for special cards */
         }
 
         @keyframes specialIconPulse {
@@ -468,14 +477,14 @@
 
         .card-content {
             font-size: clamp(16px, 4.2vw, 18px);
-            line-height: 1.7; 
-            flex-grow: 1; 
+            line-height: 1.7; /* Improved readability */
+            flex-grow: 1; /* Allow content to take available space */
             display: flex;
-            align-items: center; 
-            justify-content: center; 
+            align-items: center; /* Vertically center text if short */
+            justify-content: center; /* Horizontally center text */
             overflow-y: auto;
-            padding: 0 5px; 
-            margin-top: 5px; 
+            padding: 0 5px; /* Small horizontal padding for scrollbar */
+            margin-top: 5px; /* Space above content */
         }
         .card-content::-webkit-scrollbar { width: 6px; }
         .card-content::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
@@ -483,36 +492,36 @@
 
         .controls {
             display: flex;
-            flex-wrap: wrap; 
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
             justify-content: center;
             align-items: center;
-            gap: 8px; 
+            gap: 8px; /* Space between buttons */
         }
 
         .controls button {
-            background: linear-gradient(145deg, #B3005E, #7A0042); 
+            background: linear-gradient(145deg, #B3005E, #7A0042); /* Darker pink gradient */
             color: white;
             border: 1px solid #FF33A1;
-            padding: 14px 20px; 
-            font-size: clamp(14px, 3.8vw, 16px); 
+            padding: 14px 20px; /* Slightly larger padding */
+            font-size: clamp(14px, 3.8vw, 16px); /* Responsive font size */
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
-            border-radius: 30px; 
+            border-radius: 30px; /* More rounded */
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255,51,161,0.7) inset;
             text-transform: uppercase;
             letter-spacing: 1px;
-            flex-grow: 1; 
-            min-width: 130px; 
+            flex-grow: 1; /* Allow buttons to grow */
+            min-width: 130px; /* Minimum width for buttons */
         }
-         .controls button.pose-button { 
-            background: linear-gradient(145deg, #FF69B4, #C71585); 
+         .controls button.pose-button { /* Specific style for pose button */
+            background: linear-gradient(145deg, #FF69B4, #C71585); /* Lighter, more vibrant pink */
             color: white;
             border-color: #FF33A1;
             box-shadow: 0 6px 18px rgba(0,0,0,0.3), 0 0 12px rgba(255,105,180,0.7) inset;
         }
-        .controls button.pose-button:hover { 
+        .controls button.pose-button:hover { /* Hover for pose button */
             background: linear-gradient(145deg, #C71585, #FF69B4);
             box-shadow: 0 10px 25px rgba(0,0,0,0.4), 0 0 18px rgba(255,105,180,0.9) inset, 0 0 15px #FF69B4;
         }
@@ -530,7 +539,7 @@
         }
 
         #resetButton {
-            background: linear-gradient(145deg, #5A4FCF, #3D32AA); 
+            background: linear-gradient(145deg, #5A4FCF, #3D32AA); /* Purple gradient */
             border-color: #8A7FFF;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(138,127,255,0.7) inset;
         }
@@ -540,24 +549,24 @@
         }
 
         .cards-remaining {
-            margin-top: 25px; 
-            font-size: 14px; 
+            margin-top: 25px; /* Space above card count */
+            font-size: 14px; /* Slightly smaller */
             color: #E6A4B4;
         }
 
         /* --- COMMENT FEED PAGE STYLES --- */
-        .comment-feed-page.active { 
+        .comment-feed-page.active { /* Ensure it takes full screen when active */
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            padding: 20px; 
-            margin-top: 0; 
-            z-index: 1003; 
-            background-color: rgba(10, 0, 5, 0.95); 
-            backdrop-filter: blur(15px); 
-            display: flex; 
+            padding: 20px; /* Consistent padding */
+            margin-top: 0; /* Override body padding */
+            z-index: 1003; /* Below top bar but above game */
+            background-color: rgba(10, 0, 5, 0.95); /* Darker, less transparent */
+            backdrop-filter: blur(15px); /* Stronger blur */
+            display: flex; /* Already flex, ensure it's set */
             flex-direction: column;
             align-items: center;
             box-sizing: border-box;
@@ -566,29 +575,29 @@
         .comment-feed-page h2 {
             font-family: 'Playfair Display', serif;
             color: #FF69B4;
-            margin-top: 20px; 
-            margin-bottom: 15px; 
+            margin-top: 20px; /* Space from top of page */
+            margin-bottom: 15px; /* Space below title */
             font-size: clamp(22px, 5vw, 28px);
             text-shadow: 0 0 10px #FF69B4;
         }
         #commentFeedDisplayArea {
             width: 100%;
-            max-width: 700px; 
-            flex-grow: 1; 
+            max-width: 700px; /* Max width for readability */
+            flex-grow: 1; /* Take available vertical space */
             overflow-y: auto;
-            padding: 15px; 
+            padding: 15px; /* Inner padding */
             background-color: rgba(0,0,0,0.25);
             border-radius: 15px;
-            margin-bottom: 10px; 
+            margin-bottom: 10px; /* Space before form */
             border: 1px solid rgba(255,51,161,0.2);
-            max-height: calc(100vh - 250px); 
+            max-height: calc(100vh - 250px); /* Limit height to prevent overflow, adjust as needed */
         }
         #commentFeedDisplayArea::-webkit-scrollbar { width: 8px; }
         #commentFeedDisplayArea::-webkit-scrollbar-thumb { background: #FF33A1; border-radius: 10px; }
         #commentFeedDisplayArea::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
         
         .comment-item { 
-            background-color: rgba(255,255,255,0.06); 
+            background-color: rgba(255,255,255,0.06); /* Slightly lighter for contrast */
             padding: 10px 15px;
             border-radius: 8px;
             margin-bottom: 10px;
@@ -596,14 +605,14 @@
             font-size: 15px;
             text-align: left;
             word-wrap: break-word;
-            border-left: 3px solid #FF33A1; 
+            border-left: 3px solid #FF33A1; /* Pink accent */
         }
         .comment-item strong { 
             color: #FF8AD8;
             margin-right: 8px;
         }
         .comment-item .admin-tick {
-            color: #FFD700; 
+            color: #FFD700; /* Gold for admin */
             margin-left: 5px;
             font-weight: bold;
         }
@@ -616,14 +625,14 @@
         }
         .comment-reply-button {
             background: none;
-            border: 1px solid #8A7FFF;
+            border: 1px solid #8A7FFF; /* Purple for reply */
             color: #8A7FFF;
             padding: 3px 8px;
             font-size: 12px;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 5px;
-            float: right; 
+            float: right; /* Align to the right */
             transition: background-color 0.2s, color 0.2s;
         }
         .comment-reply-button:hover {
@@ -631,7 +640,7 @@
             color: #1D111C;
         }
         .replies-container {
-            margin-left: 25px; 
+            margin-left: 25px; /* Indent replies */
             margin-top: 8px;
             border-left: 2px solid rgba(255, 105, 180, 0.3);
             padding-left: 10px;
@@ -644,7 +653,7 @@
             border-radius: 6px;
         }
         .reply-form-container textarea {
-            width: calc(100% - 16px);
+            width: calc(100% - 16px); /* Full width minus padding */
             padding: 8px;
             font-size: 13px;
             height: 40px;
@@ -667,11 +676,11 @@
 
         .comment-feed-page #commentFeedForm { 
             width: 100%;
-            max-width: 600px; 
-            margin: 0 auto 10px auto; 
+            max-width: 600px; /* Max width for form */
+            margin: 0 auto 10px auto; /* Centered, space below */
             display: flex; 
             flex-direction: column; 
-            gap: 8px; 
+            gap: 8px; /* Space between form elements */
         }
         .comment-feed-page #commentFeedForm label {
              color: #FF8AD8;
@@ -679,40 +688,40 @@
              font-size: 13px; 
              text-align: left;
              display: block;
-             margin-bottom: 2px; 
+             margin-bottom: 2px; /* Small space below label */
         }
         .comment-feed-page #commentFeedForm input[type="text"],
         .comment-feed-page #commentFeedForm input[type="password"],
         .comment-feed-page #commentFeedForm textarea {
-            width: 100%; 
-            padding: 10px; 
-            margin-bottom: 8px; 
-            border: 1px solid #5A4FCF; 
-            border-radius: 8px; 
+            width: 100%; /* Full width */
+            padding: 10px; /* Comfortable padding */
+            margin-bottom: 8px; /* Space below input */
+            border: 1px solid #5A4FCF; /* Purple border */
+            border-radius: 8px; /* Rounded corners */
             background-color: rgba(255,255,255,0.05);
             color: #F5E9F2;
-            font-size: 14px; 
-            box-sizing: border-box; 
+            font-size: 14px; /* Readable font size */
+            box-sizing: border-box; /* Include padding in width */
         }
          .comment-feed-page #commentFeedForm textarea {
-            height: 60px; 
+            height: 60px; /* Default height for textarea */
             resize: vertical;
-            margin-bottom: 5px; 
+            margin-bottom: 5px; /* Reduced margin for emoji picker */
         }
-        .emoji-picker-container { 
+        .emoji-picker-container { /* Container for button and picker */
             display: flex;
             align-items: center;
-            gap: 8px; 
-            margin-bottom: 8px; 
+            gap: 8px; /* Space between button and picker (if side-by-side) */
+            margin-bottom: 8px; /* Space below picker area */
         }
         #toggleEmojiPickerButton {
             background: none;
             border: 1px solid #FF8AD8;
             color: #FF8AD8;
-            padding: 6px 10px; 
+            padding: 6px 10px; /* Adjust padding */
             border-radius: 6px;
             cursor: pointer;
-            font-size: 16px; 
+            font-size: 16px; /* Emoji size */
             transition: background-color 0.2s, color 0.2s;
         }
         #toggleEmojiPickerButton:hover {
@@ -721,22 +730,22 @@
         }
 
         .emoji-picker {
-            display: none; 
+            display: none; /* Hidden by default */
             flex-wrap: wrap;
-            gap: 6px; 
-            justify-content: flex-start; 
-            padding: 6px; 
+            gap: 6px; /* Space between emojis */
+            justify-content: flex-start; /* Align emojis to the start */
+            padding: 6px; /* Padding around emojis */
             background-color: rgba(0,0,0,0.2);
             border-radius: 6px;
-            margin-top: 3px; 
+            margin-top: 3px; /* Space above picker if it's below button */
         }
         .emoji-picker.visible {
             display: flex;
         }
         .emoji-picker span {
-            font-size: 20px; 
+            font-size: 20px; /* Emoji size */
             cursor: pointer;
-            padding: 3px; 
+            padding: 3px; /* Clickable area */
             border-radius: 5px;
             transition: background-color 0.2s;
         }
@@ -745,16 +754,16 @@
         }
 
         .comment-feed-page #commentFeedForm button[type="submit"] { 
-            width: 100%; 
-            padding: 12px 20px; 
-            margin-top: 5px; 
+            width: 100%; /* Full width */
+            padding: 12px 20px; /* Good padding */
+            margin-top: 5px; /* Space above button */
             font-size: 16px; 
             letter-spacing: 1px; 
             background: linear-gradient(145deg, #FF33A1, #C71585);
             color: white;
             border: 1px solid #FF33A1;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(255,51,161,0.6) inset;
-            border-radius: 25px; 
+            border-radius: 25px; /* Rounded button */
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             cursor: pointer;
@@ -768,18 +777,19 @@
          }
 
          #adminFeedPasswordContainer {
+            /* Styles for admin password field container if needed, currently shown/hidden by JS */
          }
 
 
         .comment-feed-page .back-to-game-button {
-            margin-top: 15px; 
-            padding: 10px 20px; 
-            font-size: 16px; 
-            background: linear-gradient(145deg, #7A0042, #B3005E); 
+            margin-top: 15px; /* Space above button */
+            padding: 10px 20px; /* Standard padding */
+            font-size: 16px; /* Standard font size */
+            background: linear-gradient(145deg, #7A0042, #B3005E); /* Darker pink, consistent with other back buttons */
             color: white;
             border: 1px solid #B3005E;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(179,0,94,0.6) inset;
-            align-self: center; 
+            align-self: center; /* Center button */
             border-radius: 25px;
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
@@ -795,8 +805,8 @@
 
 
         /* MODAL CHO TƯ THẾ */
-        .pose-modal { 
-            display: none; 
+        .pose-modal { /* Modal background */
+            display: none; /* Hidden by default */
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -804,13 +814,13 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7); 
+            background-color: rgba(0,0,0,0.7); /* Dark overlay */
             backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
         }
 
-        .pose-modal-content { 
+        .pose-modal-content { /* Modal box */
             background: linear-gradient(145deg, #3E253B, #2A1628);
             margin: auto;
             padding: 30px;
@@ -829,7 +839,7 @@
             to { transform: translateY(0); opacity: 1;}
         }
 
-        .pose-modal-close { 
+        .pose-modal-close { /* Close button (X) */
             color: #FF8AD8;
             position: absolute;
             top: 15px;
@@ -846,7 +856,7 @@
             cursor: pointer;
         }
 
-        .pose-modal h2 { 
+        .pose-modal h2 { /* Modal title */
             font-family: 'Playfair Display', serif;
             color: #FF69B4;
             margin-top: 0;
@@ -854,15 +864,15 @@
             font-size: 24px;
         }
 
-        .pose-modal p { 
+        .pose-modal p { /* Modal text content */
             font-size: 17px;
             line-height: 1.7;
             color: #F0E6F0;
-            min-height: 50px; 
+            min-height: 50px; /* Ensure space for text */
             margin-bottom: 25px;
-            text-align: left; 
+            text-align: left; /* Align pose details to the left */
         }
-         .pose-modal p strong { 
+         .pose-modal p strong { /* For pose name */
             color: #FF8AD8;
             display: block;
             margin-bottom: 8px;
@@ -901,27 +911,27 @@
 
         <h2 data-translate-key="landing_prepare_title">Cần Chuẩn Bị Gì?</h2>
         <ul> 
-            <li data-translate-key="landing_prepare_list_item1"></li>
-            <li data-translate-key="landing_prepare_list_item2"></li>
-            <li data-translate-key="landing_prepare_list_item3"></li>
-            <li data-translate-key="landing_prepare_list_item4"></li>
-            <li data-translate-key="landing_prepare_list_item5"></li>
+            <li data-translate-key="landing_prepare_list_item1">Không gian riêng tư, ấm cúng và hoàn toàn thoải mái.</li>
+            <li data-translate-key="landing_prepare_list_item2">Đồ uống yêu thích của cả hai (rượu vang, cocktail, mocktail, hay bất cứ gì làm bạn thấy "phiêu").</li>
+            <li data-translate-key="landing_prepare_list_item3">Một tâm hồn rộng mở, sẵn sàng phiêu lưu, chia sẻ và không phán xét.</li>
+            <li data-translate-key="landing_prepare_list_item4">Người bạn đời/bạn tình mà bạn tin tưởng tuyệt đối và muốn cùng nhau khám phá.</li>
+            <li data-translate-key="landing_prepare_list_item5">(Tùy chọn) Một chút nhạc nền du dương, quyến rũ.</li>
         </ul>
 
         <h2 data-translate-key="landing_who_play_title">Ai Nên Chơi?</h2>
         <ul>
-            <li data-translate-key="landing_who_play_list_item1"></li>
-            <li data-translate-key="landing_who_play_list_item2"></li>
-            <li data-translate-key="landing_who_play_list_item3"></li>
+            <li data-translate-key="landing_who_play_list_item1">Các cặp đôi đang yêu, vợ chồng muốn "thổi lửa" cho mối quan hệ.</li>
+            <li data-translate-key="landing_who_play_list_item2">Những cặp đôi thích khám phá, không ngại thử thách và muốn tìm hiểu sâu hơn về những khao khát thầm kín của nhau.</li>
+            <li data-translate-key="landing_who_play_list_item3">Bất kỳ ai trên 18 tuổi, có sự đồng thuận tuyệt đối và muốn thêm gia vị cho đời sống tình dục một cách vui vẻ, sáng tạo và đầy đam mê.</li>
         </ul>
 
         <h2 data-translate-key="landing_when_play_title">Nên Chơi Khi Nào?</h2>
         <ul>
-            <li data-translate-key="landing_when_play_list_item1"></li>
-            <li data-translate-key="landing_when_play_list_item2"></li>
-            <li data-translate-key="landing_when_play_list_item3"></li>
-            <li data-translate-key="landing_when_play_list_item4"></li>
-            <li data-translate-key="landing_when_play_list_item5"></li>
+            <li data-translate-key="landing_when_play_list_item1">Những buổi tối hẹn hò đặc biệt, chỉ có hai người.</li>
+            <li data-translate-key="landing_when_play_list_item2">Dịp kỷ niệm tình yêu, ngày cưới, hoặc một dấu mốc quan trọng.</li>
+            <li data-translate-key="landing_when_play_list_item3">Khi bạn muốn phá vỡ sự nhàm chán, tìm kiếm những trải nghiệm mới mẻ và mãnh liệt hơn.</li>
+            <li data-translate-key="landing_when_play_list_item4">Trong những chuyến du lịch lãng mạn, tạo thêm điểm nhấn khó quên cho kỳ nghỉ.</li>
+            <li data-translate-key="landing_when_play_list_item5">Bất cứ khi nào cả hai cảm thấy sẵn sàng cho một cuộc phiêu lưu tình ái đầy bất ngờ!</li>
         </ul>
         
         <button class="cta-button" id="startGameButton" data-translate-key="landing_start_button">Bắt Đầu Cuộc Vui</button>
@@ -959,8 +969,7 @@
         <div class="pose-modal-content">
             <span class="pose-modal-close" id="closePoseModal">×</span>
             <h2 id="poseModalTitle" data-translate-key="pose_modal_title_text">🔥 Tư Thế Ngẫu Nhiên 21+ 🔥</h2>
-            <p id="poseModalText"></p>
-        </div>
+            <p id="poseModalText"></p> </div>
     </div>
 
     <div class="comment-feed-page page-section" id="commentFeedPage">
@@ -990,12 +999,17 @@
         <button class="back-to-game-button" id="backToGameFromComments" data-translate-key="back_to_main_button">Quay Lại</button>
     </div>
 
+    <div id="youtube-player-container">
+        <div id="youtube-player"></div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // State variables
             let isYoutubeAudioPlaying = false; 
-            let currentReplyingTo = null; // Đảm bảo khai báo này là duy nhất và ở đầu scope
+            let currentReplyingTo = null; // For comment replies
 
+            // DOM Element references
             const landingPageSection = document.getElementById('landingPageSection');
             const gameContainer = document.getElementById('gameContainer');
             const commentFeedPage = document.getElementById('commentFeedPage'); 
@@ -1007,6 +1021,7 @@
             const openCommentPageButton = document.getElementById('openCommentPageButton'); 
             const backToGameFromCommentsButton = document.getElementById('backToGameFromComments');
 
+            // Game elements
             const cardPlaceholder = document.getElementById('cardPlaceholder');
             const drawnCardElement = document.getElementById('drawnCard');
             const cardCategoryElement = document.getElementById('cardCategory');
@@ -1016,12 +1031,14 @@
             const resetButton = document.getElementById('resetButton');
             const cardsRemainingElement = document.getElementById('cardsRemaining');
             
+            // Pose modal elements
             const poseModal = document.getElementById('poseModal'); 
             const closePoseModalButton = document.getElementById('closePoseModal'); 
             const poseModalTitle = document.getElementById('poseModalTitle'); 
             const poseModalText = document.getElementById('poseModalText'); 
             const predefinedPoseButton = document.getElementById('predefinedPoseButton'); 
 
+            // Comment feed elements
             const commentForm = document.getElementById('commentFeedForm');
             const commentUserInput = document.getElementById('commentFeedUser');
             const adminFeedPasswordContainer = document.getElementById('adminFeedPasswordContainer');
@@ -1031,12 +1048,13 @@
             const emojiPicker = document.getElementById('emojiPicker');
             const toggleEmojiPickerButton = document.getElementById('toggleEmojiPickerButton'); 
             
+            // YouTube audio elements
             const youtubeAudioToggleButton = document.getElementById('youtubeAudioToggle');
-            let ytPlayer;
-            const YOUTUBE_VIDEO_ID = 'KzBPjjxd8xg'; 
+            let ytPlayer; // YouTube player instance
+            const YOUTUBE_VIDEO_ID = 'KzBPjjxd8xg'; // Replace with your desired YouTube video ID for background music
 
 
-            // --- DỮ LIỆU DỊCH THUẬT ---
+            // --- DỮ LIỆU DỊCH THUẬT (TRANSLATION DATA) ---
             const translations = {
                 'vi': {
                     'lang_name': 'Tiếng Việt',
@@ -1081,6 +1099,7 @@
                     'reply_button_text': 'Trả lời',
                     'submit_reply_button_text': 'Gửi Trả Lời',
                     'cancel_reply_button_text': 'Hủy',
+                    'alert_comment_message_required': "Vui lòng nhập nội dung bình luận.",
                     'no_poses_defined': "Không có tư thế nào được định nghĩa.",
                     'anonymous_user': 'Ẩn danh',
                     // Card Categories
@@ -1088,8 +1107,8 @@
                     'Câu Hỏi': 'Câu Hỏi',
                     'Hành Động': 'Hành Động',
                     'Đặc Biệt': 'Đặc Biệt',
-                    'Tư Thế Nóng Bỏng': 'Tư Thế Nóng Bỏng',
-                    'Thử Thách Táo Bạo': 'Thử Thách Táo Bạo'
+                    'Tư Thế Nóng Bỏng': 'Tư Thế Nóng Bỏng', // Steamy Pose
+                    'Thử Thách Táo Bạo': 'Thử Thách Táo Bạo' // Daring Challenge
                 },
                 'en': {
                     'lang_name': 'English',
@@ -1148,8 +1167,9 @@
             };
 
             // Dữ liệu lá bài (80 lá) - Đảm bảo đầy đủ cấu trúc cho vi và en
+            // Card data (80 cards) - Ensure complete structure for vi and en
             const cardData = [
-                // Thử Thách (15)
+                // Thử Thách (Challenge) - 15 cards
                 { id: 1, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Hôn đối phương ở 3 vị trí bất kỳ (không phải môi).", en: "Kiss your partner in any 3 places (not the lips)."}, icon: "💋" },
                 { id: 2, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Thì thầm một bí mật \"đen tối\" nhất của bạn vào tai đối phương.", en: "Whisper your darkest secret into your partner's ear."}, icon: "🤫" },
                 { id: 3, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Nhảy một điệu nhảy gợi cảm trong 30 giây cho đối phương xem.", en: "Perform a sensual dance for your partner for 30 seconds."}, icon: "💃" },
@@ -1165,7 +1185,7 @@
                 { id: 13, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Cả hai cùng nhắm mắt, người rút bài chạm nhẹ lên môi đối phương.", en: "Both close your eyes; the card drawer gently touches the partner's lips."}, icon: "✨" },
                 { id: 14, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Hôn lên cổ đối phương cho đến khi họ bật cười.", en: "Kiss your partner's neck until they laugh."}, icon: "🧛" },
                 { id: 15, category: {vi: "Thử Thách", en: "Challenge"}, text: {vi: "Tạo dáng một tư thế yoga đôi đơn giản cùng nhau.", en: "Strike a simple couple's yoga pose together."}, icon: "🧘" },
-                // Câu Hỏi (15)
+                // Câu Hỏi (Question) - 15 cards
                 { id: 16, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Điều gì ở đối phương khiến bạn cảm thấy \"bật lửa\" nhất ngay lúc này?", en: "What about your partner turns you on the most right now?"}, icon: "🔥" },
                 { id: 17, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Kỷ niệm \"nóng bỏng\" nhất của hai bạn là gì?", en: "What is your steamiest memory together?"}, icon: "🌶️" },
                 { id: 18, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Nếu được thử một vai trò mới trên giường, bạn muốn là ai/gì?", en: "If you could try a new role in bed, who/what would you be?"}, icon: "🎭" },
@@ -1181,7 +1201,7 @@
                 { id: 28, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Mùi hương nào trên cơ thể đối phương bạn thích nhất?", en: "What is your favorite scent on your partner's body?"}, icon: "👃" },
                 { id: 29, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Bạn có \"vùng cấm\" nào trên cơ thể không muốn đối phương chạm vào không?", en: "Are there any 'off-limits' areas on your body you don't want your partner to touch?"}, icon: "🚫" },
                 { id: 30, category: {vi: "Câu Hỏi", en: "Question"}, text: {vi: "Một điều bạn muốn đối phương làm thường xuyên hơn khi \"yêu\"?", en: "One thing you wish your partner did more often during lovemaking?"}, icon: "➕" },
-                // Hành Động (15)
+                // Hành Động (Action) - 15 cards
                 { id: 31, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Người rút bài cởi 1 món đồ trên người.", en: "The card drawer removes one item of clothing."}, icon: "👚" },
                 { id: 32, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Đối phương cởi 1 món đồ trên người.", en: "Your partner removes one item of clothing."}, icon: "👕" },
                 { id: 33, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Cả hai cùng cởi 1 món đồ.", en: "Both remove one item of clothing."}, icon: "🔗" },
@@ -1197,14 +1217,14 @@
                 { id: 43, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Cởi đồ của đối phương từ từ, từng món một.", en: "Slowly undress your partner, one item at a time."}, icon: "🎁" },
                 { id: 44, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Cả hai cùng uống 1 ly, sau đó người rút bài quyết định hành động tiếp theo.", en: "Both take a drink, then the card drawer decides the next action."}, icon: "🍹" },
                 { id: 45, category: {vi: "Hành Động", en: "Action"}, text: {vi: "Thử một kiểu hôn mới mà hai bạn chưa từng thử.", en: "Try a new type of kiss you've never tried before."}, icon: "💡" },
-                // Đặc Biệt (15)
+                // Đặc Biệt (Special) - 15 cards
                 { id: 46, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "MAY MẮN! Bạn được miễn hình phạt lần này. Đối phương uống 1 ly.", en: "LUCKY! You are exempt from penalty this time. Partner takes a drink."}, icon: "🍀" },
                 { id: 47, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "QUYỀN LỰC! Bạn được yêu cầu đối phương làm 1 điều (nhỏ).", en: "POWER! You get to ask your partner to do one (small) thing."}, icon: "👑" },
                 { id: 48, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "ĐỒNG ĐỘI! Cả hai cùng uống 1 ly.", en: "TEAM UP! Both take a drink."}, icon: "🍻" },
                 { id: 49, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "ĐỔI VAI! Đối phương rút lá tiếp theo thay bạn.", en: "SWITCH ROLES! Partner draws the next card instead of you."}, icon: "🔄" },
                 { id: 50, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TRÚNG THƯỞNG! Bạn được chọn 1 lá bất kỳ đã qua để thực hiện lại (nếu có).", en: "PRIZE! You get to choose any previous card to do again (if applicable)."}, icon: "🏆" },
                 { id: 51, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHIA SẺ! Cả hai cùng kể một bí mật nhỏ chưa từng nói.", en: "SHARE! Both share a small, unsaid secret."}, icon: "💬" },
-                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "🔥👚" },
+                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "�👚" },
                 { id: 53, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "THẬT THÀ! Đối phương phải trả lời thật lòng 1 câu hỏi bất kỳ của bạn.", en: "TRUTHFUL! Partner must honestly answer any one question from you."}, icon: "🗣️❓" },
                 { id: 54, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NHANH NHƯ CHỚP! Cả hai cùng hôn nhau 5 kiểu khác nhau trong 30 giây.", en: "LIGHTNING FAST! Both kiss each other 5 different ways in 30 seconds."}, icon: "⚡💋" },
                 { id: 55, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TẠM DỪNG! Dừng chơi 5 phút để trò chuyện hoặc làm gì tùy thích.", en: "PAUSE! Stop playing for 5 minutes to chat or do whatever you like."}, icon: "⏸️" },
@@ -1212,8 +1232,8 @@
                 { id: 57, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NỤ HÔN BẤT NGỜ! Nhắm mắt lại, đối phương sẽ hôn bạn ở một nơi bất ngờ.", en: "SURPRISE KISS! Close your eyes, partner will kiss you in an unexpected place."}, icon: "😘🙈" },
                 { id: 58, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TIẾT LỘ! Tiết lộ một điều bạn thích về cách đối phương \"yêu\".", en: "REVEAL! Reveal something you like about how your partner makes love."}, icon: "💖" },
                 { id: 59, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHỌN MỘT! Đối phương được chọn: cởi 1 món đồ hoặc uống 2 ly.", en: "CHOOSE ONE! Partner chooses: remove 1 item of clothing or take 2 drinks."}, icon: "⚖️" },
-                { id: 60, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "KẾT THÚC NGỌT NGÀO! Cả hai cùng uống cạn ly và ôm hôn nhau thật lâu.", en: "SWEET ENDING! Both finish your drinks and share a long, loving hug and kiss."}, icon: "�❤️" },
-                // Tư Thế Nóng Bỏng (10)
+                { id: 60, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "KẾT THÚC NGỌT NGÀO! Cả hai cùng uống cạn ly và ôm hôn nhau thật lâu.", en: "SWEET ENDING! Both finish your drinks and share a long, loving hug and kiss."}, icon: " ❤️" },
+                // Tư Thế Nóng Bỏng (Steamy Pose) - 10 cards
                 { id: 61, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Cùng nhau thử tư thế \"Úp thìa\" và cảm nhận sự gần gũi.", en: "Try the \"Spooning\" position together and feel the closeness."}, icon: "🛌🥄" },
                 { id: 62, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Gợi ý tư thế \"Nữ cao bồi\". Ai sẽ là người dẫn dắt?", en: "Suggest the \"Cowgirl\" position. Who will take the lead?"}, icon: "🤠🏇" },
                 { id: 63, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Thử tư thế \"Doggy\" và khám phá góc nhìn mới.", en: "Try the \"Doggy\" style and explore a new perspective."}, icon: "🐕🐾" },
@@ -1224,7 +1244,7 @@
                 { id: 68, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Trên ghế sofa - Tận dụng không gian quen thuộc.", en: "On the sofa - Utilize familiar space."}, icon: "🛋️🔥" },
                 { id: 69, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Thì thầm một tư thế bạn muốn thử nhất vào tai đối phương. Thực hiện sau.", en: "Whisper a position you most want to try into your partner's ear. Do it later."}, icon: "🤫💞" },
                 { id: 70, category: {vi: "Tư Thế Nóng Bỏng", en: "Steamy Pose"}, text: {vi: "Để đối phương chọn một tư thế từ một bộ phim/ảnh 18+. Cùng nhau diễn lại.", en: "Let your partner choose a position from an 18+ movie/picture. Re-enact it together."}, icon: "🎬🔞" },
-                // Thử Thách Táo Bạo (10)
+                // Thử Thách Táo Bạo (Daring Challenge) - 10 cards
                 { id: 71, category: {vi: "Thử Thách Táo Bạo", en: "Daring Challenge"}, text: {vi: "Hand Job: Dùng tay kích thích \"cậu bé\" của chàng cho đến khi chàng yêu cầu dừng lại hoặc... hơn thế nữa.", en: "Hand Job: Use your hand to stimulate his \"member\" until he asks you to stop or... more."}, icon: "🖐️🍆" },
                 { id: 72, category: {vi: "Thử Thách Táo Bạo", en: "Daring Challenge"}, text: {vi: "Blow Job: Dùng miệng chiều chuộng \"cậu bé\" của chàng. Hãy sáng tạo và đam mê!", en: "Blow Job: Use your mouth to please his \"member\". Be creative and passionate!"}, icon: "👄🍆" },
                 { id: 73, category: {vi: "Thử Thách Táo Bạo", en: "Daring Challenge"}, text: {vi: "Anal Sex: Nếu cả hai đồng ý và chuẩn bị kỹ càng (bôi trơn là bắt buộc!), hãy cùng nhau khám phá \"cửa sau\" một cách nhẹ nhàng.", en: "Anal Sex: If both consent and are well-prepared (lube is a must!), gently explore the \"back door\" together."}, icon: "🍑👉" },
@@ -1236,6 +1256,7 @@
                 { id: 79, category: {vi: "Thử Thách Táo Bạo", en: "Daring Challenge"}, text: {vi: "Cùng nhau xem một đoạn phim 18+ bạn chọn. Sau đó, thử mô phỏng lại một cảnh hoặc hành động bạn thấy kích thích nhất.", en: "Watch an 18+ movie clip of your choice together. Then, try to simulate a scene or action you found most arousing."}, icon: "🎞️🔥" },
                 { id: 80, category: {vi: "Thử Thách Táo Bạo", en: "Daring Challenge"}, text: {vi: "QUICKIE TÁO BẠO! Tìm một nơi bất ngờ nhất trong nhà (không phải phòng ngủ) và \"yêu nhanh\" đầy đam mê trong 5 phút.", en: "DARING QUICKIE! Find the most unexpected place in the house (not the bedroom) and have a passionate quickie for 5 minutes."}, icon: "⚡🏠" }
             ];
+            // Dữ liệu các tư thế được định nghĩa sẵn (Predefined Poses Data)
             const predefinedPoses = [
                 { name: {vi: "Doggy Style (Kiểu chó)", en: "Doggy Style"}, description: {vi: "Một người quỳ, người kia thâm nhập từ phía sau.", en: "One person kneels, the other penetrates from behind."}, reason: {vi: "Thâm nhập sâu, kích thích điểm G, cảm giác mãnh liệt.", en: "Deep penetration, G-spot stimulation, intense sensation."}, icon: "🐕🐾" },
                 { name: {vi: "Missionary Biến thể (Truyền giáo nâng cao)", en: "Advanced Missionary"}, description: {vi: "Người dưới nằm ngửa, kê gối dưới hông, chân có thể gác lên vai người kia.", en: "Person underneath lies supine, pillow under hips, legs can rest on partner's shoulders."}, reason: {vi: "Góc thâm nhập linh hoạt, tăng kết nối tình cảm.", en: "Flexible penetration angle, enhances emotional connection."}, icon: "🕊️🛐" },
@@ -1255,14 +1276,13 @@
             ];
 
 
+            // Game state variables
             let workingDeck = [];
             let drawnCardsHistory = [];
-            let currentLanguage = 'vi'; 
-            let previousPage = 'landing'; 
-            // let currentReplyingTo = null; // Đã khai báo ở trên, đảm bảo chỉ có một
+            let currentLanguage = 'vi'; // Default language
+            let previousPage = 'landing'; // To track navigation for comment page back button
 
-            // Các phần tử DOM của game (đã được khai báo ở đầu)
-
+            // --- LANGUAGE AND TRANSLATION FUNCTIONS ---
             function populateLanguageSwitcher() {
                 const langData = {
                     'vi': { name: 'Tiếng Việt', flag: '🇻🇳' },
@@ -1270,9 +1290,9 @@
                 };
 
                 if (languageSwitcher) {
-                    languageSwitcher.innerHTML = ''; 
+                    languageSwitcher.innerHTML = ''; // Clear existing buttons
                     Object.keys(langData).forEach(langCode => {
-                        if (translations[langCode]) { 
+                        if (translations[langCode]) { // Check if translation exists for this lang code
                             const button = document.createElement('button');
                             button.dataset.lang = langCode;
                             button.innerHTML = `<span class="flag">${langData[langCode].flag}</span> ${langData[langCode].name}`;
@@ -1285,11 +1305,12 @@
             function applyTranslations() {
                 document.querySelectorAll('[data-translate-key]').forEach(element => {
                     const key = element.dataset.translateKey;
-                    const langPack = translations[currentLanguage] || translations['vi']; 
+                    const langPack = translations[currentLanguage] || translations['vi']; // Fallback to Vietnamese
 
                     if (langPack[key] && typeof langPack[key] === 'string') { 
                         element.innerHTML = langPack[key];
                     } else if (element.tagName === 'UL' && langPack[key] && Array.isArray(langPack[key])) { 
+                        // Handle lists (e.g., for landing page sections)
                         let listHTML = '';
                         const listItemsArray = langPack[key]; 
                         listItemsArray.forEach(itemText => {
@@ -1297,11 +1318,12 @@
                                 listHTML += `<li>${itemText}</li>`;
                             } else {
                                 console.warn(`Item in list for key "${key}" is not a string:`, itemText);
-                                listHTML += `<li>[Translation Error]</li>`; 
+                                listHTML += `<li>[Translation Error]</li>`; // Placeholder for error
                             }
                         });
                         element.innerHTML = listHTML; 
                     } else {
+                        // Fallback to default language (Vietnamese) if key not found in current language
                         const defaultLangPack = translations['vi'];
                          if (defaultLangPack && defaultLangPack[key] && typeof defaultLangPack[key] === 'string') {
                            element.innerHTML = defaultLangPack[key];
@@ -1317,16 +1339,18 @@
                             });
                             element.innerHTML = listHTML;
                         } 
+                        // console.warn(`Translation key "${key}" not found in language "${currentLanguage}" or fallback "vi".`);
                     }
                 });
+                // Update dynamic text not covered by data-translate-key
                 if (cardPlaceholder && cardPlaceholder.style.display !== 'none') {
                     const pElement = cardPlaceholder.querySelector('p');
                     if (pElement) {
                         pElement.textContent = (translations[currentLanguage] && translations[currentLanguage]['card_placeholder_text']) || translations['vi']['card_placeholder_text'];
                     }
                 }
-                updateCardsRemainingDisplay();
-                if (youtubeAudioToggleButton) { 
+                updateCardsRemainingDisplay(); // Update "cards remaining" text
+                if (youtubeAudioToggleButton) { // Update YouTube button text
                      youtubeAudioToggleButton.innerHTML = (translations[currentLanguage] && (isYoutubeAudioPlaying ? translations[currentLanguage]['pause_youtube_audio_button'] : translations[currentLanguage]['play_youtube_audio_button'])) || (isYoutubeAudioPlaying ? translations['vi']['pause_youtube_audio_button'] : translations['vi']['play_youtube_audio_button']);
                 }
             }
@@ -1334,9 +1358,10 @@
             function changeLanguage(lang) {
                 if (translations[lang]) {
                     currentLanguage = lang;
-                    document.documentElement.lang = lang; 
-                    localStorage.setItem('preferredLanguage', lang);
+                    document.documentElement.lang = lang; // Set lang attribute on HTML element
+                    localStorage.setItem('preferredLanguage', lang); // Save preference
                     applyTranslations();
+                    // Update active state of language buttons
                     document.querySelectorAll('.language-switcher button').forEach(btn => {
                         btn.classList.remove('active');
                         if (btn.dataset.lang === lang) {
@@ -1348,7 +1373,7 @@
 
             if (languageSwitcher) {
                 languageSwitcher.addEventListener('click', (event) => {
-                    if (event.target.closest('button')) { 
+                    if (event.target.closest('button')) { // Ensure a button was clicked
                         const lang = event.target.closest('button').dataset.lang;
                         if(lang) changeLanguage(lang);
                     }
@@ -1357,19 +1382,20 @@
 
 
             function initializeLanguage() {
-                populateLanguageSwitcher(); 
+                populateLanguageSwitcher(); // Create language buttons
                 let preferredLang = localStorage.getItem('preferredLanguage');
-                if (!preferredLang || !translations[preferredLang]) { 
-                    const browserLang = navigator.language.split('-')[0];
+                if (!preferredLang || !translations[preferredLang]) { // If no preference or invalid
+                    const browserLang = navigator.language.split('-')[0]; // Get browser language (e.g., 'en' from 'en-US')
                     if (translations[browserLang]) {
                         preferredLang = browserLang;
                     } else {
-                        preferredLang = 'vi'; 
+                        preferredLang = 'vi'; // Default to Vietnamese
                     }
                 }
                 changeLanguage(preferredLang);
             }
             
+            // --- PAGE NAVIGATION ---
             function showPage(pageId) {
                 document.querySelectorAll('.page-section').forEach(section => {
                     if (section) section.classList.remove('active');
@@ -1379,10 +1405,11 @@
                     pageToShow.classList.add('active');
                 }
 
+                // Adjust UI elements based on the current page
                 const isCommentPage = pageId === 'commentFeedPage';
                 if (topBarControls) {
                     topBarControls.classList.toggle('hidden', isCommentPage);
-                    document.body.style.paddingTop = isCommentPage ? '20px' : '70px';
+                    document.body.style.paddingTop = isCommentPage ? '20px' : '70px'; // Adjust body padding
                 }
                 if (openCommentPageButton) {
                     openCommentPageButton.classList.toggle('hidden', isCommentPage);
@@ -1392,16 +1419,16 @@
             
             if (startGameButton) {
                 startGameButton.addEventListener('click', () => {
-                    previousPage = 'game'; 
+                    previousPage = 'game'; // Set for back navigation from comments
                     showPage('gameContainer');
-                    initializeDeck(); 
-                    if (Tone.context.state !== 'running') {
+                    initializeDeck(); // Prepare the card deck
+                    if (Tone.context.state !== 'running') { // Start Tone.js audio context if not already running
                         Tone.start().catch(e => console.error("Tone.start error on game start:", e)); 
                     }
                 });
             }
 
-
+            // --- GAME LOGIC ---
             function shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1410,27 +1437,38 @@
             }
 
             function initializeDeck() {
+                // Get the translated category names for "Steamy Pose" and "Daring Challenge"
                 const steamyPoseCategoryVI = translations['vi']['Tư Thế Nóng Bỏng'];
                 const steamyPoseCategoryEN = translations['en']['Steamy Pose'];
+                const daringChallengeCategoryVI = translations['vi']['Thử Thách Táo Bạo'];
+                const daringChallengeCategoryEN = translations['en']['Daring Challenge'];
 
-                let normalCards = [];
-                let steamyCards = [];
+                let otherCards = [];
+                let hotCards = [];
 
                 cardData.forEach(card => {
-                    if (card.category.vi === steamyPoseCategoryVI || card.category.en === steamyPoseCategoryEN) {
-                        steamyCards.push(card);
+                    const cardCategoryVI = card.category.vi;
+                    const cardCategoryEN = card.category.en;
+
+                    // Check if the card is a "hot card" (Steamy Pose or Daring Challenge)
+                    if ( (cardCategoryVI === steamyPoseCategoryVI || cardCategoryEN === steamyPoseCategoryEN) ||
+                         (cardCategoryVI === daringChallengeCategoryVI || cardCategoryEN === daringChallengeCategoryEN) ) {
+                        hotCards.push(card);
                     } else {
-                        normalCards.push(card);
+                        otherCards.push(card);
                     }
                 });
 
-                shuffleArray(normalCards);
-                shuffleArray(steamyCards);
-                workingDeck = [...normalCards, ...steamyCards];
+                shuffleArray(otherCards); // Shuffle non-hot cards
+                shuffleArray(hotCards);   // Shuffle hot cards among themselves
+                
+                // Concatenate, with hot cards appearing last
+                workingDeck = [...otherCards, ...hotCards];
                 
                 drawnCardsHistory = [];
                 updateCardsRemainingDisplay(); 
                 
+                // Reset card display area
                 if(drawnCardElement) drawnCardElement.style.display = 'none';
                 if(drawnCardElement) drawnCardElement.classList.remove('special-effect-card'); 
                 if(cardPlaceholder) cardPlaceholder.style.display = 'flex';
@@ -1438,9 +1476,11 @@
                     const pElement = cardPlaceholder.querySelector('p');
                     if(pElement) pElement.textContent = (translations[currentLanguage] && translations[currentLanguage]['card_placeholder_text']) || translations['vi']['card_placeholder_text']; 
                 }
+                // Reset buttons
                 if(drawButton) drawButton.style.display = 'inline-block';
                 if(resetButton) resetButton.style.display = 'none';
             }
+
 
             function updateCardsRemainingDisplay() { 
                 const prefix = (translations[currentLanguage] && translations[currentLanguage]['cards_remaining_text_prefix']) || "Còn lại:";
@@ -1448,13 +1488,14 @@
                 if(cardsRemainingElement) cardsRemainingElement.textContent = `${prefix} ${workingDeck.length} ${suffix}`.trim();
             }
 
-            const synth = new Tone.MembraneSynth({
+            // Sound effects using Tone.js
+            const synth = new Tone.MembraneSynth({ // Basic card draw sound
                 pitchDecay: 0.03,
                 octaves: 6,
                 oscillator: { type: "sine" },
                 envelope: { attack: 0.001, decay: 0.5, sustain: 0.01, release: 0.8, attackCurve: "bounce" }
             }).toDestination();
-             const fmSynth = new Tone.FMSynth({
+             const fmSynth = new Tone.FMSynth({ // Special card sound
                 harmonicity: 3.01,
                 modulationIndex: 14,
                 envelope: { attack: 0.01, decay: 0.1, sustain:0.01, release:0.1},
@@ -1468,7 +1509,7 @@
                  fmSynth.triggerAttackRelease("G5", "8n", Tone.now() + 0.2);
             };
 
-            const hotStuffSound = () => {
+            const hotStuffSound = () => { // Sound for "hot" cards
                 if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in hotStuffSound:", e));
                 const now = Tone.now();
                 const sexySynth = new Tone.FMSynth({
@@ -1479,9 +1520,9 @@
                     envelope: { attack: 0.05, decay: 0.3, sustain: 0.1, release: 0.8 },
                     modulation: { type: "sine" },
                     modulationEnvelope: { attack: 0.1, decay: 0.2, sustain: 0.3, release: 0.8 },
-                    volume: -8
+                    volume: -8 // Adjust volume as needed
                 }).toDestination();
-                const reverb = new Tone.Reverb(0.7).toDestination();
+                const reverb = new Tone.Reverb(0.7).toDestination(); // Add some reverb
                 sexySynth.connect(reverb);
 
                 sexySynth.triggerAttackRelease("F#2", "4n", now);
@@ -1493,41 +1534,45 @@
                 if(cardPlaceholder) cardPlaceholder.style.display = 'none';
                 if(drawnCardElement) drawnCardElement.style.display = 'flex';
                 
-                if(drawnCardElement) drawnCardElement.classList.remove('special-effect-card'); 
+                if(drawnCardElement) drawnCardElement.classList.remove('special-effect-card'); // Reset class
                 
+                // Force reflow to restart animation
                 if(drawnCardElement) drawnCardElement.style.animation = 'none';
                 if(drawnCardElement) void drawnCardElement.offsetWidth; 
 
                 const cardCategoryText = (card.category && card.category[currentLanguage]) || (card.category && card.category['vi']) || "Category"; 
                 const cardContentText = (card.text && card.text[currentLanguage]) || (card.text && card.text['vi']) || "Card Text";
 
+                // Keys for "hot" categories from translations
                 const translatedSteamyPoseKey = 'Tư Thế Nóng Bỏng';
                 const translatedDaringChallengeKey = 'Thử Thách Táo Bạo';
-                const translatedSpecialKey = 'Đặc Biệt';
+                const translatedSpecialKey = 'Đặc Biệt'; // Key for "Special" category
 
+                // Get current language's translation for these categories
                 const currentLangSteamyPose = (translations[currentLanguage] && translations[currentLanguage][translatedSteamyPoseKey]) || translations['vi'][translatedSteamyPoseKey];
                 const currentLangDaringChallenge = (translations[currentLanguage] && translations[currentLanguage][translatedDaringChallengeKey]) || translations['vi'][translatedDaringChallengeKey];
                 const currentLangSpecial = (translations[currentLanguage] && translations[currentLanguage][translatedSpecialKey]) || translations['vi'][translatedSpecialKey];
 
 
+                // Apply special effects and sound for "hot" or "special" cards
                 if (cardCategoryText === currentLangSteamyPose || cardCategoryText === currentLangDaringChallenge) {
                     if(drawnCardElement) drawnCardElement.classList.add('special-effect-card');
-                    hotStuffSound(); 
+                    hotStuffSound(); // Play "hot" sound
                 } else if (cardCategoryText === currentLangSpecial) {
-                    if(drawnCardElement) drawnCardElement.classList.add('special-effect-card'); 
-                    specialCardSound(); 
+                    if(drawnCardElement) drawnCardElement.classList.add('special-effect-card'); // Also apply visual effect to "Special" cards
+                    specialCardSound(); // Play "special" sound
                 }
-                 else {
+                 else { // Basic card animation
                     if(drawnCardElement) drawnCardElement.style.animation = 'dealInBasic 0.5s cubic-bezier(0.215, 0.610, 0.355, 1), flipInCardBasic 0.7s 0.5s ease-out forwards';
                 }
 
                 if(cardCategoryElement) cardCategoryElement.textContent = cardCategoryText;
                 if(cardIconElement) cardIconElement.textContent = card.icon;
-                if(cardTextElement) cardTextElement.innerHTML = cardContentText.replace(/\n/g, '<br>'); 
+                if(cardTextElement) cardTextElement.innerHTML = cardContentText.replace(/\n/g, '<br>'); // Preserve line breaks
             }
 
             function drawCard() {
-                if (Tone.context.state !== 'running') { 
+                if (Tone.context.state !== 'running') { // Ensure Tone.js context is active
                     Tone.start().then(() => {
                         if (workingDeck.length > 0) {
                             processDrawCard();
@@ -1541,12 +1586,12 @@
             }
 
             function processDrawCard() {
-                const card = workingDeck.pop();
+                const card = workingDeck.pop(); // Get card from the end of the deck
                 drawnCardsHistory.push(card);
                 displayCard(card);
                 updateCardsRemainingDisplay();
 
-                if (workingDeck.length === 0) {
+                if (workingDeck.length === 0) { // No cards left
                     if(drawButton) drawButton.style.display = 'none';
                     if(resetButton) resetButton.style.display = 'inline-block';
                     if(cardsRemainingElement) cardsRemainingElement.textContent = (translations[currentLanguage] && translations[currentLanguage]['no_cards_left_text']) || translations['vi']['no_cards_left_text'];
@@ -1555,16 +1600,16 @@
             
             // --- YouTube Audio Logic ---
             function onYouTubeIframeAPIReady() {
-                if(ytPlayer) return; 
+                if(ytPlayer) return; // Prevent multiple player initializations
                 ytPlayer = new YT.Player('youtube-player', {
-                    height: '0', 
-                    width: '0',  
+                    height: '0', // Hidden player
+                    width: '0',  // Hidden player
                     videoId: YOUTUBE_VIDEO_ID,
                     playerVars: {
-                        'autoplay': 0, 
-                        'controls': 0, 
-                        'loop': 1,     
-                        'playlist': YOUTUBE_VIDEO_ID 
+                        'autoplay': 0, // Don't autoplay initially
+                        'controls': 0, // Hide controls
+                        'loop': 1,     // Loop the video/playlist
+                        'playlist': YOUTUBE_VIDEO_ID // Needed for looping a single video
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -1572,10 +1617,11 @@
                     }
                 });
             }
-            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady; 
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady; // Make it globally accessible for the API
 
             function onPlayerReady(event) {
-                // Player sẵn sàng
+                // Player is ready (e.g., you could auto-play here if desired, or set volume)
+                // event.target.setVolume(50); // Example: Set volume to 50%
             }
 
             function onPlayerStateChange(event) {
@@ -1590,22 +1636,23 @@
             }
 
             function toggleYoutubeAudio() {
-                if (Tone.context.state !== 'running') {
+                if (Tone.context.state !== 'running') { // Ensure Tone.js context (for other sounds) is also running
                     Tone.start().catch(e => console.error("Tone.start error in toggleYoutubeAudio:", e));
                 }
                 if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
                     console.log("YouTube Player not ready yet.");
+                    // Attempt to load API if not already loaded (e.g. if initial load failed)
                     if (!window.YT || !window.YT.Player) { 
                         var tag = document.createElement('script');
-                        tag.src = "https://www.youtube.com/iframe_api";
+                        tag.src = "https://www.youtube.com/iframe_api"; // Correct API URL
                         var firstScriptTag = document.getElementsByTagName('script')[0];
                         if (firstScriptTag && firstScriptTag.parentNode) {
                              firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
                         } else {
-                            document.head.appendChild(tag);
+                            document.head.appendChild(tag); // Fallback if no script tags exist
                         }
-                    } else if (!ytPlayer) { 
-                         onYouTubeIframeAPIReady(); 
+                    } else if (!ytPlayer) { // If YT object exists but player not initialized
+                         onYouTubeIframeAPIReady(); // Try to initialize now
                     }
                     return;
                 }
@@ -1621,6 +1668,7 @@
                 youtubeAudioToggleButton.addEventListener('click', toggleYoutubeAudio);
             }
             
+            // Load the YouTube IFrame Player API code asynchronously.
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -1631,13 +1679,14 @@
             }
             // --------------------------
 
-
+            // --- POSE MODAL LOGIC ---
             function displayRandomPredefinedPose() {
-                if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in displayRandomPredefinedPose:", e)); 
+                if (Tone.context.state !== 'running') Tone.start().catch(e => console.error("Tone.start error in displayRandomPredefinedPose:", e)); // Ensure audio context
                 if (predefinedPoses.length > 0) {
                     const randomIndex = Math.floor(Math.random() * predefinedPoses.length);
                     const pose = predefinedPoses[randomIndex];
                     
+                    // Get translated text for pose details
                     const poseName = (pose.name && pose.name[currentLanguage]) || (pose.name && pose.name['vi']) || "Pose Name";
                     const poseDescription = (pose.description && pose.description[currentLanguage]) || (pose.description && pose.description['vi']) || "Pose Description";
                     const poseReason = (pose.reason && pose.reason[currentLanguage]) || (pose.reason && pose.reason['vi']) || "Pose Reason";
@@ -1650,10 +1699,11 @@
                             <em>${poseReason}</em>
                         </p>
                     `;
-                    if(poseModal) poseModal.style.display = 'flex'; 
-                    hotStuffSound(); 
+                    if(poseModal) poseModal.style.display = 'flex'; // Show the modal
+                    hotStuffSound(); // Play a sound for the pose reveal
                 } else {
-                    if(poseModalTitle) poseModalTitle.textContent = (translations[currentLanguage] && translations[currentLanguage]['Thông Báo']) || "Notification"; 
+                    // Handle case where no poses are defined
+                    if(poseModalTitle) poseModalTitle.textContent = (translations[currentLanguage] && translations[currentLanguage]['Thông Báo']) || "Notification"; // Generic title
                     if(poseModalText) poseModalText.innerHTML = `<p>${(translations[currentLanguage] && translations[currentLanguage]['no_poses_defined']) || "Không có tư thế nào được định nghĩa."}</p>`;
                     if(poseModal) poseModal.style.display = 'flex';
                 }
@@ -1662,22 +1712,22 @@
             if(predefinedPoseButton) predefinedPoseButton.addEventListener('click', displayRandomPredefinedPose); 
 
             if(closePoseModalButton) closePoseModalButton.addEventListener('click', () => { 
-                if(poseModal) poseModal.style.display = 'none'; 
+                if(poseModal) poseModal.style.display = 'none'; // Hide modal
             });
             
             // --- COMMENT FEED PAGE LOGIC ---
-            const adminUsername = "dev team";
-            const adminPasswordValue = "22042412";
-            const emojis = ['💖', '🔥', '💋', '😈', '😂', '👍', '🤔', '🎉', '🥂', '💦', '🍆', '🍑'];
+            const adminUsername = "dev team"; // Define admin username
+            const adminPasswordValue = "22042412"; // Define admin password
+            const emojis = ['💖', '🔥', '💋', '😈', '😂', '👍', '🤔', '🎉', '🥂', '💦', '🍆', '🍑']; // Available emojis
 
             function populateEmojiPicker() {
                 if (!emojiPicker) return;
-                emojiPicker.innerHTML = '';
+                emojiPicker.innerHTML = ''; // Clear existing emojis
                 emojis.forEach(emoji => {
                     const emojiSpan = document.createElement('span');
                     emojiSpan.textContent = emoji;
                     emojiSpan.addEventListener('click', () => {
-                        if(commentMessageInput) {
+                        if(commentMessageInput) { // Insert emoji into comment textarea
                             const cursorPos = commentMessageInput.selectionStart;
                             const textBefore = commentMessageInput.value.substring(0, cursorPos);
                             const textAfter = commentMessageInput.value.substring(cursorPos);
@@ -1692,42 +1742,45 @@
 
             if(toggleEmojiPickerButton && emojiPicker){
                 toggleEmojiPickerButton.addEventListener('click', () => {
-                    emojiPicker.classList.toggle('visible');
+                    emojiPicker.classList.toggle('visible'); // Show/hide emoji picker
                 });
             }
 
 
             if(openCommentPageButton) { 
                 openCommentPageButton.addEventListener('click', () => {
+                    // Determine which page was active before opening comments
                     if (landingPageSection && landingPageSection.classList.contains('active')) {
                         previousPage = 'landing';
                     } else if (gameContainer && gameContainer.classList.contains('active')) {
                         previousPage = 'game';
                     }
                     showPage('commentFeedPage');
-                    loadComments(); 
-                    if (emojiPicker && !emojiPicker.innerHTML) { 
+                    loadComments(); // Load comments when page is shown
+                    if (emojiPicker && !emojiPicker.innerHTML) { // Populate emoji picker if not already done
                         populateEmojiPicker();
                     }
                 });
             }
             if(backToGameFromCommentsButton) {
                 backToGameFromCommentsButton.addEventListener('click', () => {
-                    showPage(previousPage === 'game' ? 'gameContainer' : 'landingPageSection');
+                    showPage(previousPage === 'game' ? 'gameContainer' : 'landingPageSection'); // Go back to previous page
                 });
             }
             
+            // Show admin password field if admin username is typed
             if(commentUserInput) {
                 commentUserInput.addEventListener('input', () => {
                     if (commentUserInput.value.toLowerCase() === adminUsername) {
                         if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'block';
                     } else {
                         if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none';
-                        if(adminFeedPasswordInput) adminFeedPasswordInput.value = ''; 
+                        if(adminFeedPasswordInput) adminFeedPasswordInput.value = ''; // Clear password if username changes
                     }
                 });
             }
 
+            // Load comments from Firestore
             async function loadComments() { 
                 if (!commentFeedDisplayArea || !window.firebaseDB || !window.firebaseAppId) {
                     console.warn("Firestore DB or App ID not available for loading comments.");
@@ -1736,46 +1789,51 @@
                 
                 const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
                 const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
+                // Query comments, order by timestamp (oldest first for tree building)
                 const q = window.firebaseQuery(commentsCol, window.firebaseOrderBy("timestamp", "asc")); 
 
                 window.firebaseOnSnapshot(q, (querySnapshot) => {
-                    commentFeedDisplayArea.innerHTML = ''; 
+                    if(!commentFeedDisplayArea) return;
+                    commentFeedDisplayArea.innerHTML = ''; // Clear previous comments
                     const allComments = [];
                     querySnapshot.forEach((doc) => {
                         allComments.push({ id: doc.id, ...doc.data() });
                     });
 
+                    // Build a tree structure for comments and replies
                     const commentTree = {};
                     const topLevelComments = [];
 
                     allComments.forEach(comment => {
-                        comment.replies = []; 
+                        comment.replies = []; // Initialize replies array
                         commentTree[comment.id] = comment;
-                        if (comment.parentId) {
+                        if (comment.parentId) { // If it's a reply
                             if (commentTree[comment.parentId]) {
                                 commentTree[comment.parentId].replies.push(comment);
                             } else {
-                                topLevelComments.push(comment); 
+                                topLevelComments.push(comment); // Orphaned reply, treat as top-level
                             }
-                        } else {
+                        } else { // If it's a top-level comment
                             topLevelComments.push(comment);
                         }
                     });
                     
+                    // Sort top-level comments by timestamp (already sorted by query, but good for safety)
                     topLevelComments.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
 
 
                     topLevelComments.forEach(comment => {
-                        displayCommentWithReplies(comment, commentFeedDisplayArea, 0);
+                        displayCommentWithReplies(comment, commentFeedDisplayArea, 0); // Display each comment tree
                     });
 
-                    if(commentFeedDisplayArea) commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight;
+                    if(commentFeedDisplayArea) commentFeedDisplayArea.scrollTop = commentFeedDisplayArea.scrollHeight; // Scroll to bottom
                 }, (error) => {
                     console.error("Error loading comments: ", error);
                     if(commentFeedDisplayArea) commentFeedDisplayArea.innerHTML = "<li>Lỗi tải bình luận. Vui lòng thử lại sau.</li>";
                 });
             }
             
+            // Recursively display comments and their replies
             function displayCommentWithReplies(comment, container, depth) {
                 const commentElement = createCommentElement(comment, depth);
                 container.appendChild(commentElement);
@@ -1783,10 +1841,11 @@
                 if (comment.replies && comment.replies.length > 0) {
                     const repliesContainer = document.createElement('div');
                     repliesContainer.classList.add('replies-container');
-                    if (depth > 0) { 
+                    if (depth > 0) { // Adjust margin for deeper replies - simple indentation
                         repliesContainer.style.marginLeft = `${depth * 15 + 25}px`;
                     }
                     commentElement.appendChild(repliesContainer);
+                    // Sort replies by timestamp before displaying
                     comment.replies.sort((a, b) => (a.timestamp?.toDate() || 0) - (b.timestamp?.toDate() || 0));
                     comment.replies.forEach(reply => {
                         displayCommentWithReplies(reply, repliesContainer, depth + 1);
@@ -1795,25 +1854,28 @@
             }
 
 
+            // Create HTML element for a single comment
             function createCommentElement(commentData, depth) {
                 const commentItem = document.createElement('div');
                 commentItem.classList.add('comment-item');
-                commentItem.dataset.commentId = commentData.id; 
+                commentItem.dataset.commentId = commentData.id; // Store comment ID for replies
                 if (depth > 0) {
+                    // Basic indentation for replies, can be improved with CSS
                     commentItem.style.marginLeft = `${depth * 10}px`; 
                 }
                 
                 let userNameDisplay = commentData.user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh");
                 let adminTickHTML = '';
                 if (commentData.isAdmin) {
-                    adminTickHTML = '<span class="admin-tick">⭐</span>'; 
+                    adminTickHTML = '<span class="admin-tick">⭐</span>'; // Admin indicator
                 }
 
-                const sanitizedMessage = (commentData.message || "").replace(/</g, "<").replace(/>/g, ">");
+                // Sanitize message content (basic HTML entity encoding)
+                const sanitizedMessage = (commentData.message || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 let commentTimestamp = "Đang tải...";
                 if (commentData.timestamp && typeof commentData.timestamp.toDate === 'function') {
                     commentTimestamp = commentData.timestamp.toDate().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
-                } else if (commentData.timestamp) { 
+                } else if (commentData.timestamp) { // Fallback if timestamp is not a Firestore Timestamp object
                      commentTimestamp = new Date(commentData.timestamp).toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
                 }
 
@@ -1836,17 +1898,20 @@
                 return commentItem;
             }
 
+            // Show form for replying to a comment
             function showReplyForm(parentId, parentCommentElement) {
+                // Remove any existing reply form to prevent duplicates
                 const existingReplyForm = parentCommentElement.querySelector('.reply-form-container');
                 if (existingReplyForm) {
                     existingReplyForm.remove();
-                    currentReplyingTo = null; 
-                    return; 
+                    currentReplyingTo = null; // Reset replying state
+                    return; // Toggle off if clicked again
                 }
+                // Remove other open reply forms
                 document.querySelectorAll('.reply-form-container').forEach(form => form.remove());
 
 
-                currentReplyingTo = parentId; 
+                currentReplyingTo = parentId; // Set the ID of the comment being replied to
 
                 const replyFormContainer = document.createElement('div');
                 replyFormContainer.classList.add('reply-form-container');
@@ -1857,33 +1922,33 @@
 
                 const submitReplyButton = document.createElement('button');
                 submitReplyButton.textContent = translations[currentLanguage]?.submit_reply_button_text || 'Gửi Trả Lời';
-                submitReplyButton.type = 'button'; 
+                submitReplyButton.type = 'button'; // Important to prevent form submission if nested
 
                 const cancelReplyButton = document.createElement('button');
                 cancelReplyButton.textContent = translations[currentLanguage]?.cancel_reply_button_text || 'Hủy';
                 cancelReplyButton.type = 'button';
                 cancelReplyButton.style.marginLeft = '5px';
-                cancelReplyButton.style.background = 'grey';
+                cancelReplyButton.style.background = 'grey'; // Simple cancel button style
 
 
                 submitReplyButton.onclick = async () => {
                     const replyMessage = replyTextarea.value.trim();
                     if (replyMessage) {
-                        const user = commentUserInput.value.trim(); 
+                        const user = commentUserInput.value.trim(); // Get current user from main input (or handle anonymous)
                         const password = adminFeedPasswordInput.value;
                         let isAdminReply = false;
                         if (user.toLowerCase() === adminUsername && password === adminPasswordValue) {
                             isAdminReply = true;
                         }
-                        await saveComment(user, replyMessage, isAdminReply, currentReplyingTo); 
-                        replyFormContainer.remove(); 
-                        currentReplyingTo = null; 
+                        await saveComment(user, replyMessage, isAdminReply, currentReplyingTo); // Save as a reply
+                        replyFormContainer.remove(); // Clean up form
+                        currentReplyingTo = null; // Reset state
                     }
                 };
                 
                 cancelReplyButton.onclick = () => {
                     replyFormContainer.remove();
-                    currentReplyingTo = null; 
+                    currentReplyingTo = null; // Reset state
                 };
 
                 replyFormContainer.appendChild(replyTextarea);
@@ -1894,28 +1959,32 @@
             }
 
 
+            // Save comment to Firestore
             async function saveComment(user, message, isAdmin, parentId = null) { 
                 if (!window.firebaseDB || !window.firebaseAuth || !window.firebaseAuth.currentUser || !window.firebaseAppId) {
                     console.error("Firebase not initialized or user not authenticated for saving comment.");
+                    // Use a custom modal or a less intrusive notification instead of alert
+                    // For now, keeping alert for simplicity as per original structure
                     alert("Không thể gửi bình luận. Vui lòng thử lại sau.");
                     return null; 
                 }
-                const userIdAuth = window.firebaseAuth.currentUser.uid;
+                const userIdAuth = window.firebaseAuth.currentUser.uid; // Get authenticated user's ID
 
                 try {
                     const commentsColPath = `artifacts/${window.firebaseAppId}/public/data/comments`;
                     const commentsCol = window.firebaseCollection(window.firebaseDB, commentsColPath);
                     const commentData = {
-                        userId: userIdAuth, 
+                        userId: userIdAuth, // Store Firebase Auth UID
                         user: user || (translations[currentLanguage]?.anonymous_user || "Ẩn danh"),
                         message: message,
                         isAdmin: isAdmin,
-                        timestamp: window.firebaseServerTimestamp() 
+                        timestamp: window.firebaseServerTimestamp() // Use server timestamp for consistency
                     };
                     if (parentId) {
-                        commentData.parentId = parentId;
+                        commentData.parentId = parentId; // Link reply to parent comment
                     }
                     await window.firebaseAddDoc(commentsCol, commentData);
+                    // No need to manually reload comments here, onSnapshot will handle it
                 } catch (error) {
                     console.error("Error adding comment: ", error);
                     alert("Lỗi khi gửi bình luận. Vui lòng thử lại.");
@@ -1932,16 +2001,16 @@
 
                     const currentTrans = translations[currentLanguage] || translations['vi'];
 
-                    if (!message) {
+                    if (!message) { // Basic validation for message content
                         const messageLabel = document.querySelector('label[for="commentFeedMessage"]');
-                        if (messageLabel) {
+                        if (messageLabel) { // Show error near the input field
                             messageLabel.textContent = currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận.";
-                            messageLabel.style.color = "#FF33A1";
-                            setTimeout(() => {
+                            messageLabel.style.color = "#FF33A1"; // Highlight error
+                            setTimeout(() => { // Reset after a few seconds
                                 messageLabel.textContent = currentTrans['comment_message_label'] || "Chia sẻ của bạn:";
                                 messageLabel.style.color = "#FF8AD8";
                             }, 3000);
-                        } else {
+                        } else { // Fallback to alert if label not found
                             alert(currentTrans['alert_comment_message_required'] || "Vui lòng nhập nội dung bình luận của bạn.");
                         }
                         return;
@@ -1953,29 +2022,30 @@
                         isAdmin = true;
                     }
                     
-                    await saveComment(user, message, isAdmin, null); 
+                    await saveComment(user, message, isAdmin, null); // Save as top-level comment (parentId is null)
                     
-                    commentForm.reset(); 
-                    if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none'; 
-                    if(emojiPicker) emojiPicker.classList.remove('visible'); 
+                    if(commentForm) commentForm.reset(); // Reset form fields
+                    if(adminFeedPasswordContainer) adminFeedPasswordContainer.style.display = 'none'; // Hide admin password field
+                    if(emojiPicker) emojiPicker.classList.remove('visible'); // Hide emoji picker
                 });
             }
             // --------------------------------------
 
-
+            // --- GLOBAL EVENT LISTENERS ---
+            // Close pose modal if clicked outside of it
             window.addEventListener('click', (event) => {
                 if (event.target == poseModal) { 
                     if(poseModal) poseModal.style.display = 'none'; 
                 }
             });
 
+            // --- INITIALIZATION ---
             if(drawButton) drawButton.addEventListener('click', drawCard);
             if(resetButton) resetButton.addEventListener('click', initializeDeck);
             
-            initializeLanguage(); 
-            showPage('landingPageSection'); 
+            initializeLanguage(); // Set up language and translations
+            showPage('landingPageSection'); // Show landing page initially
         });
     </script>
 </body>
 </html>
-�
