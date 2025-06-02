@@ -1224,7 +1224,7 @@
                 { id: 49, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "ĐỔI VAI! Đối phương rút lá tiếp theo thay bạn.", en: "SWITCH ROLES! Partner draws the next card instead of you."}, icon: "🔄" },
                 { id: 50, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TRÚNG THƯỞNG! Bạn được chọn 1 lá bất kỳ đã qua để thực hiện lại (nếu có).", en: "PRIZE! You get to choose any previous card to do again (if applicable)."}, icon: "🏆" },
                 { id: 51, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHIA SẺ! Cả hai cùng kể một bí mật nhỏ chưa từng nói.", en: "SHARE! Both share a small, unsaid secret."}, icon: "💬" },
-                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "�👚" },
+                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "🔥👚" },
                 { id: 53, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "THẬT THÀ! Đối phương phải trả lời thật lòng 1 câu hỏi bất kỳ của bạn.", en: "TRUTHFUL! Partner must honestly answer any one question from you."}, icon: "🗣️❓" },
                 { id: 54, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NHANH NHƯ CHỚP! Cả hai cùng hôn nhau 5 kiểu khác nhau trong 30 giây.", en: "LIGHTNING FAST! Both kiss each other 5 different ways in 30 seconds."}, icon: "⚡💋" },
                 { id: 55, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TẠM DỪNG! Dừng chơi 5 phút để trò chuyện hoặc làm gì tùy thích.", en: "PAUSE! Stop playing for 5 minutes to chat or do whatever you like."}, icon: "⏸️" },
@@ -1462,8 +1462,9 @@
                 shuffleArray(otherCards); // Shuffle non-hot cards
                 shuffleArray(hotCards);   // Shuffle hot cards among themselves
                 
-                // Concatenate, with hot cards appearing last
-                workingDeck = [...otherCards, ...hotCards];
+                // To make "hotCards" drawn LAST using .pop(), they must be at the BEGINNING of the workingDeck array.
+                // "otherCards" will be at the END of the array, so they are popped (drawn) first.
+                workingDeck = [...hotCards, ...otherCards]; // Hot cards first, then other cards
                 
                 drawnCardsHistory = [];
                 updateCardsRemainingDisplay(); 
@@ -1871,7 +1872,7 @@
                 }
 
                 // Sanitize message content (basic HTML entity encoding)
-                const sanitizedMessage = (commentData.message || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const sanitizedMessage = (commentData.message || "").replace(/</g, "<").replace(/>/g, ">");
                 let commentTimestamp = "Đang tải...";
                 if (commentData.timestamp && typeof commentData.timestamp.toDate === 'function') {
                     commentTimestamp = commentData.timestamp.toDate().toLocaleString(currentLanguage === 'vi' ? 'vi-VN' : 'en-US');
