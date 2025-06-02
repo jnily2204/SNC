@@ -7,81 +7,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <style>
-        /* CSS (Không thay đổi so với phiên bản trước có đầy đủ tính năng và giao diện 18+) */
+        /* CSS ĐÃ ĐƯỢC CẬP NHẬT */
         body {
             display: flex;
             flex-direction: column; 
-            justify-content: center;
+            justify-content: center; /* Căn giữa nội dung chính theo chiều dọc */
             align-items: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #120810 0%, #2C1A2B 100%); 
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 20px;
+            padding-top: 70px; /* Thêm padding top để không bị che bởi top-bar */
             box-sizing: border-box;
             color: #F5E9F2; 
         }
 
-        .language-switcher {
-            position: fixed; 
-            top: 15px;
-            right: 15px;
-            z-index: 1002; 
-            background-color: rgba(0,0,0,0.6); 
-            padding: 10px;
-            border-radius: 12px;
+        /* --- TOP BAR CONTROLS --- */
+        .top-bar-controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0,0,0,0.3); /* Nền mờ hơn */
+            backdrop-filter: blur(5px);
+            padding: 8px 15px; /* Giảm padding */
             display: flex;
-            flex-wrap: wrap; 
-            gap: 8px;
-            max-width: 250px; 
-            justify-content: flex-end;
+            justify-content: space-between; /* Đẩy các mục ra hai bên */
+            align-items: center;
+            z-index: 1005; /* Đảm bảo luôn ở trên cùng */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+
+        .language-switcher {
+            /* Bỏ position: fixed, top, right vì đã nằm trong top-bar */
+            background-color: transparent; /* Bỏ nền riêng */
+            padding: 0;
+            border-radius: 0;
+            display: flex;
+            flex-wrap: nowrap; /* Ngăn xuống dòng nếu ít ngôn ngữ */
+            gap: 6px; /* Giảm gap */
+            justify-content: flex-start; /* Căn trái trong phần của nó */
         }
         .language-switcher button {
             background: none;
-            border: 1px solid rgba(255, 51, 161, 0.6); 
+            border: 1px solid rgba(255, 51, 161, 0.4); 
             color: #FFC0CB; 
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 8px; /* Giảm padding nút */
+            border-radius: 6px; 
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px; /* Giảm font size */
             transition: background-color 0.3s, color 0.3s, transform 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px; 
         }
         .language-switcher button:hover, .language-switcher button.active {
             background-color: #FF33A1;
             color: #1D111C;
-            transform: scale(1.05);
+            transform: scale(1.03); /* Giảm hiệu ứng scale */
             border-color: #FF33A1;
         }
         .language-switcher button .flag {
-            font-size: 16px; 
+            font-size: 14px; 
+        }
+        
+        .music-controls {
+             /* Bỏ margin-top vì đã nằm trong top-bar */
+            margin-top: 0;
+        }
+        .music-controls button {
+            background: rgba(255, 51, 161, 0.1); /* Nền nhẹ hơn */
+            border: 1px solid rgba(255, 51, 161, 0.4);
+            color: #FF8AD8;
+            padding: 5px 10px; /* Giảm padding nút nhạc */
+            font-size: 13px; /* Giảm font size */
+            border-radius: 20px;
+        }
+        .music-controls button:hover {
+            background: #FF33A1;
+            color: #1D111C;
+            box-shadow: 0 0 8px #FF33A1; /* Giảm shadow */
         }
 
-        .floating-comment-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(145deg, #FF33A1, #C71585);
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 28px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            z-index: 999;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .floating-comment-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(255,51,161,0.5);
-        }
+
+        /* Nút bình luận nổi đã bị xóa */
 
         .page-section { 
             display: none; 
@@ -104,7 +115,7 @@
             align-items: center;
             text-align: center;
             padding: 40px 25px;
-            margin-top: 20px; 
+            /* margin-top: 20px;  Đã có padding-top ở body */
             max-width: 700px; 
             background-color: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(15px);
@@ -200,7 +211,7 @@
         .game-container {
             flex-direction: column; 
             align-items: center; 
-            margin-top: 60px; 
+            /* margin-top: 60px; Đã có padding-top ở body */
             background-color: rgba(10, 0, 5, 0.4); 
             backdrop-filter: blur(12px);
             padding: 25px; 
@@ -428,24 +439,6 @@
             color: #E6A4B4;
         }
 
-        .music-controls {
-            margin-top: 20px; 
-        }
-
-        .music-controls button {
-            background: rgba(255, 51, 161, 0.15);
-            border: 1px solid #FF33A1;
-            color: #FF8AD8;
-            padding: 8px 15px; 
-            font-size: 14px;
-            border-radius: 25px;
-        }
-        .music-controls button:hover {
-            background: #FF33A1;
-            color: #1D111C;
-            box-shadow: 0 0 12px #FF33A1;
-        }
-
         /* MODAL CHO TƯ THẾ */
         .pose-modal { 
             display: none; 
@@ -524,8 +517,13 @@
     </style>
 </head>
 <body>
-    <div class="language-switcher" id="languageSwitcher">
+    <div class="top-bar-controls">
+        <div class="language-switcher" id="languageSwitcher">
+            </div>
+        <div class="music-controls">
+            <button id="musicToggle" data-translate-key="play_music_button">▶️ Mở Nhạc</button>
         </div>
+    </div>
     
     <div class="landing-page-section page-section active" id="landingPageSection">
         <h1 data-translate-key="landing_main_title">Bộ Bài Yêu Thương</h1>
@@ -579,11 +577,8 @@
         
         <div class="cards-remaining" id="cardsRemaining" data-translate-key="cards_remaining_text_prefix">Còn lại: 80 lá</div>
 
-        <div class="music-controls">
-            <button id="musicToggle" data-translate-key="play_music_button">▶️ Mở Nhạc</button>
-        </div>
         <audio id="backgroundMusic" loop>
-            <source src="YOUR_MUSIC_FILE.mp3" type="audio/mpeg">
+            <source src="music slow.mp3" type="audio/mpeg">
             Trình duyệt của bạn không hỗ trợ phát nhạc.
         </audio>
     </div>
@@ -796,7 +791,7 @@
                 { id: 49, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "ĐỔI VAI! Đối phương rút lá tiếp theo thay bạn.", en: "SWITCH ROLES! Partner draws the next card instead of you."}, icon: "🔄" },
                 { id: 50, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TRÚNG THƯỞNG! Bạn được chọn 1 lá bất kỳ đã qua để thực hiện lại (nếu có).", en: "PRIZE! You get to choose any previous card to do again (if applicable)."}, icon: "🏆" },
                 { id: 51, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "CHIA SẺ! Cả hai cùng kể một bí mật nhỏ chưa từng nói.", en: "SHARE! Both share a small, unsaid secret."}, icon: "💬" },
-                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "🔥👚" },
+                { id: 52, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NÓNG BỎNG! Người rút bài phải cởi 2 món đồ.", en: "STEAMY! The card drawer must remove 2 items of clothing."}, icon: "�👚" },
                 { id: 53, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "THẬT THÀ! Đối phương phải trả lời thật lòng 1 câu hỏi bất kỳ của bạn.", en: "TRUTHFUL! Partner must honestly answer any one question from you."}, icon: "🗣️❓" },
                 { id: 54, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "NHANH NHƯ CHỚP! Cả hai cùng hôn nhau 5 kiểu khác nhau trong 30 giây.", en: "LIGHTNING FAST! Both kiss each other 5 different ways in 30 seconds."}, icon: "⚡💋" },
                 { id: 55, category: {vi: "Đặc Biệt", en: "Special"}, text: {vi: "TẠM DỪNG! Dừng chơi 5 phút để trò chuyện hoặc làm gì tùy thích.", en: "PAUSE! Stop playing for 5 minutes to chat or do whatever you like."}, icon: "⏸️" },
@@ -841,7 +836,7 @@
                 { name: {vi: "Plow (Cái cày)", en: "Plow"}, description: {vi: "Người dưới nằm ngửa, chân nâng qua đầu, người kia thâm nhập từ sau.", en: "Person underneath lies supine, legs lifted over head, partner penetrates from behind."}, reason: {vi: "Kích thích sâu, cần sự dẻo dai.", en: "Deep stimulation, requires flexibility."}, icon: "🤸‍♀️🤸‍♂️" },
                 { name: {vi: "Butterfly (Con bướm)", en: "Butterfly"}, description: {vi: "Người dưới nằm cạnh giường, chân mở rộng, người kia đứng/quỳ.", en: "Person underneath lies at the edge of the bed, legs open wide, partner stands/kneels."}, reason: {vi: "Tiếp xúc tối ưu, dễ điều chỉnh.", en: "Optimal contact, easy to adjust."}, icon: "🦋🛌" },
                 { name: {vi: "Sidekick (Đá bên)", en: "Sidekick"}, description: {vi: "Người dưới nằm sấp, một chân co, người kia thâm nhập từ góc nghiêng.", en: "Person underneath lies prone, one leg bent, partner penetrates from an angle."}, reason: {vi: "Kết hợp nằm sấp và nghiêng, thoải mái.", en: "Combines prone and side positions, comfortable."}, icon: "🤸‍♂️📐" },
-                { name: {vi: "Pretzel (Bánh quy xoắn)", en: "Pretzel"}, description: {vi: "Người dưới nằm nghiêng, một chân co, người kia quỳ và thâm nhập.", en: "Person underneath lies on their side, one leg bent, partner kneels and penetrates."}, reason: {vi: "Kết hợp độ sâu và sự thân mật.", en: "Combines depth and intimacy."}, icon: "�🤸‍♀️" },
+                { name: {vi: "Pretzel (Bánh quy xoắn)", en: "Pretzel"}, description: {vi: "Người dưới nằm nghiêng, một chân co, người kia quỳ và thâm nhập.", en: "Person underneath lies on their side, one leg bent, partner kneels and penetrates."}, reason: {vi: "Kết hợp độ sâu và sự thân mật.", en: "Combines depth and intimacy."}, icon: "🥨🤸‍♀️" },
                 { name: {vi: "Chair (Ghế)", en: "Chair"}, description: {vi: "Một người ngồi trên ghế, người kia ngồi lên đùi, mặt đối mặt hoặc quay lưng.", en: "One person sits on a chair, the other sits on their lap, facing each other or away."}, reason: {vi: "Táo bạo, thử nghiệm ngoài giường.", en: "Daring, experiment outside the bed."}, icon: "🪑🔥" },
                 { name: {vi: "G-Whiz", en: "G-Whiz"}, description: {vi: "Người dưới nằm ngửa, chân gác lên vai người kia, thâm nhập từ trên.", en: "Person underneath lies supine, legs over partner's shoulders, penetration from above."}, reason: {vi: "Tối ưu kích thích điểm G, khoái cảm mạnh.", en: "Optimal G-spot stimulation, intense pleasure."}, icon: "🎯🌟" }
             ];
@@ -1183,7 +1178,7 @@
                 if(poseModal) poseModal.style.display = 'none'; 
             });
             
-            // --- LOGIC CHO COMMENT FEED PAGE (ĐÃ BỊ XÓA) ---
+            // --- COMMENT FEED PAGE LOGIC (ĐÃ BỊ XÓA) ---
 
             window.addEventListener('click', (event) => {
                 if (event.target == poseModal) { 
